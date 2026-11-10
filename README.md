@@ -23,12 +23,9 @@ Feito com **HTML, CSS e JavaScript puro**, sem frameworks e sem bibliotecas.
 
 ## 🎬 Trailer
 
-<p align="center">
-  <a href="docs/trailer.mp4">
-    <img src="docs/capturas/trailer-capa.webp" alt="Assistir ao trailer do Smash Deck TCG (1min31s)" width="100%">
-  </a>
-  <br><em>Clique na imagem para assistir ao trailer (1min31s, com som): um tour pelo site, do Manual do Jogador às Crônicas.</em>
-</p>
+https://github.com/user-attachments/assets/035269c3-44f2-4f13-97ce-d8129408d465
+
+<p align="center"><em>Trailer oficial (1min31s, com som): um tour pelo site, do Manual do Jogador às Crônicas.</em></p>
 
 > *Este jogo não existe. Mas a engenharia por trás dele é real.*
 
