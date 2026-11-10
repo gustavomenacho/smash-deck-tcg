@@ -13,6 +13,7 @@ site-publicar/
 downloads/
 video/
 *.mp4
+!docs/trailer.mp4
 *.jpg
 !imagens/placeholder.jpg
 qr-smashdecktcg.png
