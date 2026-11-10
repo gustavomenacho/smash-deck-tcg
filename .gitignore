@@ -14,5 +14,6 @@ downloads/
 video/
 *.mp4
 *.jpg
+!imagens/placeholder.jpg
 qr-smashdecktcg.png
 qr-smashdecktcg.svg
