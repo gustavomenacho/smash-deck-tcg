@@ -1,0 +1,137 @@
+:root {
+    --bg-abissal: #0a0e17; /* Fundo do Nexo */
+    --hud-glass: rgba(10, 14, 23, 0.75);
+    --text-light: #e0e0e0;
+    --accent-gold: #f5cd03;
+    --font-principal: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* CAMADA 1: o fundo do universo (última camada) */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: var(--font-principal);
+    color: var(--text-light);
+    overflow-x: hidden;
+    overflow-x: clip; /* "clip" não vira contêiner de rolagem: mantém position: sticky funcionando */
+    background: radial-gradient(circle at 50% 50%, #0d111d 0%, #07090e 100%) fixed var(--bg-abissal);
+}
+
+/* Barras de rolagem do site inteiro (página, Ficha, carrosséis, modais): só o indicador cinza,
+   com a faixa transparente e sem as setas. Este é o ÚNICO lugar onde a barra é estilizada.
+   - Chrome, Edge e Safari usam as regras ::-webkit-scrollbar (são as únicas que escondem as setas).
+   - O Firefox não entende ::-webkit-scrollbar e usa scrollbar-width/scrollbar-color.
+   As propriedades padrão ficam só no Firefox de propósito: no Chrome/Edge elas desligariam as
+   regras ::-webkit-scrollbar e as setas voltariam. */
+::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(160, 165, 180, 0.55); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(190, 195, 210, 0.8); }
+::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+@supports not selector(::-webkit-scrollbar) {
+    * { scrollbar-width: thin; scrollbar-color: rgba(160, 165, 180, 0.55) transparent; }
+}
+
+body.no-scroll {
+    overflow: hidden; /* gaveta do menu aberta */
+}
+
+/* Efeito de abertura de aba (sensação de menu).
+   Sem "forwards": o estado final é o natural, e um transform que sobra
+   quebraria elementos position: fixed dentro da aba. */
+.fade-in {
+    animation: menuFadeIn 0.3s ease-out;
+}
+
+@keyframes menuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.98) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* CAMADA 2: canvas de partículas (camada do meio) */
+canvas#astraCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* acima do body, abaixo do conteúdo */
+    pointer-events: none; /* o mouse atravessa o canvas */
+}
+
+/* CAMADA 3: todo o conteúdo do site.
+   Seletores específicos de propósito: o antigo "section, header, footer { ... !important }"
+   também atingia <section class="grimorio"> e <header class="card-header"> das cartas
+   e apagava o fundo escuro do grimório. */
+#game-screens,
+#footer-nexus {
+    position: relative;
+    z-index: 2;
+}
+
+/* Acessibilidade */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.skip-link {
+    position: fixed;
+    top: -60px;
+    left: 12px;
+    z-index: 2000;
+    padding: 10px 16px;
+    background: var(--accent-gold);
+    color: #0a0e17;
+    font-weight: 700;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 12px;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 3px;
+}
+
+h1:focus {
+    outline: none; /* foco programático ao trocar de aba, sem anel */
+}
+
+/* Respeita quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

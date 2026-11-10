@@ -1,0 +1,4 @@
+Lora — fonte usada no texto das Crônicas do Confluente.
+Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic).
+Licença: SIL Open Font License 1.1 — uso livre, inclusive em sites: https://openfontlicense.org
+Os arquivos .woff foram reduzidos para conter só os caracteres latinos (português incluído).

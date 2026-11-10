@@ -1,0 +1,13 @@
+/* Entrada suave dos blocos (js/modules/reveal.js). As classes só existem enquanto a animação
+   não terminou; depois o JS as remove e o elemento volta ao seu estilo normal. */
+.rv {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.rv.rv-op { transform: none; }
+.rv.rv-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
+}

@@ -1,0 +1,446 @@
+/* ============================================================
+    CONFIGURAÇÕES GERAIS (PAINEL DE CONTROLE)
+    ============================================================ */
+:root {
+  /* Cores das Classes - Mantidas como referência */
+  --soberano: #71797e;
+  --trevas: #71797e;
+  --combate: #71797e;
+  --sentinela: #71797e;
+  --crime: #71797e;
+  --caos: #71797e;
+
+  /* Configuração do Metal (Borda em Degradê) */
+  --metal-shine: #bdbec0;
+  --metal-base: #bdbec0;
+  --metal-shadow: #494949;
+  --border-metal: linear-gradient(
+    135deg,
+    var(--metal-shadow) 0%,
+    var(--metal-shine) 25%,
+    var(--metal-base) 50%,
+    var(--metal-shine) 75%,
+    var(--metal-shadow) 100%
+  );
+
+  /* Layout e Espaçamento */
+  --bg-card: #ffffff;
+  --text-dark: #2c3e50;
+  --border-radius: 12px;
+  --spacing-gap: 8px;
+
+  /* Configuração do HUD */
+  --hud-border-size: 3px;
+}
+
+/* ============================================================
+    ESTRUTURA DE GIRO 3D (O "ESQUELETO")
+    ============================================================ */
+
+/* O Container define o tamanho e a perspectiva do 3D */
+.card-container {
+  width: 315px;
+  height: 440px;
+  perspective: 1000px;
+  display: inline-block;
+  margin: 10px;
+}
+
+/* O 'inner' é o que realmente gira */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+/* Reflexo "foil": uma faixa de brilho que segue o mouse (só aparece com mouse) */
+.card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  /* Sem mix-blend-mode: ele quebra o backface-visibility em alguns navegadores e deixa o verso aparecer. */
+  background: linear-gradient(
+    115deg,
+    transparent calc(var(--foil-x, 50%) - 28%),
+    rgba(255, 255, 255, 0.26) var(--foil-x, 50%),
+    transparent calc(var(--foil-x, 50%) + 28%)
+  );
+}
+.card-inner.tilting .card-front::after {
+  opacity: 0.7;
+}
+
+/* Estados controlados por js/modules/cardInteractions.js */
+.card-inner.tilting {
+  transition: transform 0.1s ease-out; /* acompanha o mouse sem atraso */
+}
+.card-inner.flipping {
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-container {
+  -webkit-tap-highlight-color: transparent;
+}
+.card-container:focus-visible {
+  outline: 2px solid #f5cd03;
+  outline-offset: 4px;
+  border-radius: var(--border-radius);
+}
+
+/* Estilo comum para as duas faces (Frente e Verso) */
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  border: 8px solid transparent;
+  box-sizing: border-box;
+  overflow: visible;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+    FRENTE DA CARTA (DESIGN ORIGINAL)
+    ============================================================ */
+.card-front {
+  background-image:
+    linear-gradient(var(--bg-card), var(--bg-card)), var(--border-metal);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  color: var(--text-dark);
+  z-index: 2;
+}
+
+/* Camada de Fundo (Background das Classes) */
+.card-front::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-card);
+}
+
+/* ============================================================
+    VERSO DA CARTA (DESIGN NOVO)
+    ============================================================ */
+.card-back {
+  /* Mantém a borda metálica, mas o fundo interno é PRETO */
+  background-image: linear-gradient(#ffffff, #000), var(--border-metal);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+
+  transform: rotateY(180deg); /* Começa de costas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* ============================================================
+    3D SÓ ONDE PRECISA
+    A maioria das cartas nunca vira (Códice, carrossel, Crônicas...). Elas ficam
+    "planas": sem verso e sem 3D de verdade. A inclinação com o mouse continua
+    funcionando, porque a perspectiva está no .card-container.
+    Antes, as 104 cartas do Códice tinham 3D e verso ao mesmo tempo: eram mais de
+    200 camadas 3D para a placa de vídeo. Em alguns computadores ela não dava
+    conta e as cartas perdiam a borda e o verso ficava transparente.
+    Só giram de verdade: a carta da Ficha, a do zoom do Início e as que
+    attachCardInteractions marca com .pode-virar.
+    ============================================================ */
+.card-back {
+  display: none;
+}
+
+.pode-virar .card-inner,
+.ficha-clone .card-inner,
+.card-clone-hologram .card-inner {
+  transform-style: preserve-3d;
+}
+
+.pode-virar .face,
+.ficha-clone .face,
+.card-clone-hologram .face {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.pode-virar .card-back,
+.ficha-clone .card-back,
+.card-clone-hologram .card-back {
+  display: flex;
+}
+
+.card-back img {
+  width: 75%;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.15));
+}
+
+/* ============================================================
+    SISTEMA DE HUD E PINS (FRENTE)
+    ============================================================ */
+.hud-container {
+  --hud-x: 8px;
+  --hud-y: 3px;
+  --hud-w: 120px;
+  --hud-h: 70px;
+  position: absolute;
+  top: var(--hud-y);
+  right: var(--hud-x);
+  width: var(--hud-w);
+  height: var(--hud-h);
+  z-index: 10;
+}
+
+.hud-border {
+  position: absolute;
+  inset: 0;
+  background-color: var(--hud-color);
+  border-radius: 35px;
+  z-index: 1;
+}
+
+.hud-glass {
+  position: absolute;
+  inset: var(--hud-border-size);
+  /* Sem backdrop-filter: desfoque dentro de uma carta 3D falha em algumas placas de vídeo */
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 50px;
+  z-index: 2;
+}
+
+.pins-container {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.icon-img {
+  position: absolute;
+  object-fit: contain;
+  filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.4));
+}
+
+.pin-class {
+  width: 150px;
+  height: 150px;
+  top: -40px;
+  left: -40px;
+}
+.pin-priority {
+  width: 130px;
+  height: 130px;
+  top: -30px;
+  left: 25px;
+}
+
+/* Cabeçalho e Nome */
+.card-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 70px;
+  margin-top: var(--spacing-gap);
+  padding: 0 10px;
+  box-sizing: border-box;
+  z-index: 5;
+}
+
+.card-name {
+  font-weight: 800;
+  font-size: 1.3rem;
+  text-shadow:
+    0.5px 0.5px 0px rgb(0, 0, 0),
+    1.5px 1.5px 2px rgb(255, 255, 255);
+  margin: 0;
+  color: #1a1a1a;
+  padding-left: 5px;
+  white-space: nowrap;
+  display: block;
+  width: 170px;
+  overflow: visible;
+}
+
+.card-name.nome-medio {
+  font-size: 1.15rem;
+  letter-spacing: -0.4px;
+}
+
+.card-name.nome-longo {
+  font-size: 1.05rem;
+  letter-spacing: -0.8px;
+  transform: translateY(2px);
+}
+
+/* Janela da Arte */
+.art-window {
+  width: calc(100% - 20px);
+  margin: var(--spacing-gap) auto 0 auto;
+  height: 215px;
+  background: #eee;
+  border: 2px solid #474747;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.card-art {
+  width: 120%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Stats (ATK, DEF, TECH) */
+.stats-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding: var(--spacing-gap) 10px 8px 10px;
+}
+
+.stat-box {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 8px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px; /* Afasta o número do ícone */
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+  color: #ffffff;
+  -webkit-text-stroke: 0.5px #000000;
+  border: 1.5px solid var(--hud-color);
+}
+
+.stat-icon {
+  width: 24px; 
+  height: 20px;
+  object-fit: contain;
+  transform: scale(2.1) translateY(1px); 
+}
+
+/* Ícone de DEF: uma única regra, sem !important (antes havia duas, 2.2 e 2.8). */
+.stat-box.def .stat-icon {
+  transform: scale(2.2) translateY(-0.1px);
+}
+
+/* Grimório (Habilidade) */
+.grimorio {
+  background: rgba(0, 0, 0, 0.48); /* sem backdrop-filter, pelo mesmo motivo do HUD */
+  padding: 10px 15px;
+  margin: 0 10px 8px 10px;
+  border-radius: 12px;
+  height: 85px;
+  position: relative;
+  border: 1.5px solid var(--hud-color);
+  color: #ffffff;
+}
+
+.skill-name {
+  font-size: 0.95rem;
+  margin-top: 0.83em; /* era a margem padrão do h2; mantida ao virar h3 */
+  margin-bottom: 3px;
+  font-weight: bold;
+  -webkit-text-stroke: 0.5px #000000;
+}
+.skill-description {
+  font-size: 0.8rem;
+  line-height: 1.1;
+  color: #f0f0f0;
+}
+
+.grimorio-icon {
+  width: 45px;
+  height: 45px;
+  position: absolute;
+  top: 1px;
+  right: 7px;
+  transform: translate(16px, -8px);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 1));
+}
+
+.card-footer {
+  position: absolute;
+  bottom: -8px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.38rem;
+  color: rgba(0, 0, 0, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  pointer-events: none;
+}
+
+/* ============================================================
+    MAPEAMENTO DE CLASSES (BACKGROUNDS E HUD)
+    ============================================================ */
+
+.card-front.soberano {
+  --hud-color: var(--soberano);
+}
+.card-front.soberano::before {
+  background-image: url("../imagens/fundos/fundo-soberano.webp");
+  opacity: 1;
+}
+
+.card-front.trevas {
+  --hud-color: var(--trevas);
+}
+.card-front.trevas::before {
+  background-image: url("../imagens/fundos/fundo-trevas.webp");
+  opacity: 1;
+}
+
+.card-front.combate {
+  --hud-color: var(--combate);
+}
+.card-front.combate::before {
+  background-image: url("../imagens/fundos/fundo-combate.webp");
+  opacity: 0.92;
+}
+
+.card-front.sentinela {
+  --hud-color: var(--sentinela);
+}
+.card-front.sentinela::before {
+  background-image: url("../imagens/fundos/fundo-sentinela.webp");
+  opacity: 0.7;
+}
+
+.card-front.crime {
+  --hud-color: var(--crime);
+}
+.card-front.crime::before {
+  background-image: url("../imagens/fundos/fundo-crime.webp");
+  opacity: 0.92;
+}
+
+.card-front.caos {
+  --hud-color: var(--caos);
+}
+.card-front.caos::before {
+  background-image: url("../imagens/fundos/fundo-caos.webp");
+  opacity: 0.9;
+}

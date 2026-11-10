@@ -1,0 +1,18 @@
+# Arquivos que não vão para o site publicado
+lixeira/
+limpar-lixo.bat
+CONTEXTO.md
+Thumbs.db
+desktop.ini
+.DS_Store
+*.bak
+*.tmp
+
+# Fora do repositório do GitHub (só o código vai para lá)
+site-publicar/
+downloads/
+video/
+*.mp4
+*.jpg
+qr-smashdecktcg.png
+qr-smashdecktcg.svg

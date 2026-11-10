@@ -1,0 +1,307 @@
+/* ============================================================
+   OFICINA DO NEXO — vitrine de conceito (nada à venda)
+   O aviso de "conceito" fica no selo do topo e na janela de cada produto.
+   ============================================================ */
+#relicario {
+    --of-ouro: 245, 205, 3;
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-bottom: 70px;
+}
+
+.of-topo { text-align: center; max-width: 760px; margin: 0 auto 34px; }
+.of-topo .screen-title { margin: 14px 0 14px; }
+.of-selo-fan {
+    display: inline-block;
+    margin: 0;
+    padding: 6px 14px;
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(var(--of-ouro));
+    border: 1px solid rgba(var(--of-ouro), 0.5);
+    border-radius: 999px;
+    background: rgba(var(--of-ouro), 0.07);
+}
+.of-lead { margin: 0; color: #b4bfd0; line-height: 1.65; font-size: 1.02rem; }
+.of-lead strong { color: #e8edf5; }
+
+.of-grupo { margin-top: 56px; }
+.of-grupo-cab { margin-bottom: 18px; border-left: 3px solid rgba(var(--of-ouro), 0.7); padding-left: 14px; }
+.of-grupo-cab h2 { margin: 0; font-size: 1.15rem; letter-spacing: 0.08em; text-transform: uppercase; color: #eef2f8; }
+.of-grupo-cab p { margin: 4px 0 0; color: #8f9bb0; font-size: 0.92rem; }
+
+/* Caixa padrão dos blocos (tapete, vitrine e cards) */
+.of-tapete,
+.of-vitrine,
+.of-card {
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(30, 36, 50, 0.92), rgba(14, 18, 28, 0.94));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+}
+
+/* Entrada suave: o JS coloca a classe "vis" quando o bloco aparece na tela */
+.of-tapete,
+.of-vitrine,
+.of-card {
+    opacity: 0;
+    transform: translateY(22px);
+}
+.of-tapete.vis,
+.of-vitrine.vis,
+.of-card.vis {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease-out var(--atraso, 0ms), transform 0.6s ease-out var(--atraso, 0ms), border-color 0.3s, box-shadow 0.3s;
+}
+
+/* ---------- 1. Tapete: foto + mapa das zonas ---------- */
+.of-tapete {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    overflow: hidden;
+}
+.of-tapete-foto {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: #0d1018;
+    cursor: zoom-in;
+}
+.of-tapete-foto img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.of-tapete-foto:hover img { transform: scale(1.03); }
+.of-tapete-mapa { padding: 22px 24px 24px; }
+.of-tapete-mapa h3 {
+    margin: 0 0 12px;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(var(--of-ouro));
+}
+
+.pm-mesa {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--of-ouro), 0.3);
+    background: radial-gradient(ellipse at 50% 50%, rgba(var(--of-ouro), 0.07), rgba(6, 8, 14, 0.95) 70%);
+}
+.pm-lado { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: end; }
+.pm-nome { grid-column: 1 / -1; text-align: center; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: #6f7b90; }
+.pm-zona { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.pm-zona > span, .pm-arena > span { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8f9bb0; }
+.pm-fila { display: flex; gap: 5px; justify-content: center; }
+.pm-slot {
+    display: block;
+    width: 26px;
+    aspect-ratio: 5 / 7;
+    border-radius: 4px;
+    border: 1.5px solid rgba(var(--of-ouro), 0.55);
+    background: rgba(var(--of-ouro), 0.05);
+    animation: pm-pulso 2.6s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+}
+.pm-slot-abismo { border-style: dashed; }
+.pm-slot-arena { width: 38px; border-color: rgba(120, 200, 255, 0.7); background: rgba(120, 200, 255, 0.06); }
+.pm-arena { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 0; border-block: 1px dashed rgba(255, 255, 255, 0.14); }
+@keyframes pm-pulso {
+    0%, 100% { box-shadow: 0 0 0 rgba(var(--of-ouro), 0); }
+    50% { box-shadow: 0 0 12px rgba(var(--of-ouro), 0.5); background: rgba(var(--of-ouro), 0.12); }
+}
+
+.of-zonas { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.of-zonas li { display: grid; grid-template-columns: 84px 1fr; gap: 10px; font-size: 0.88rem; line-height: 1.45; }
+.of-zonas b { color: #eef2f8; }
+.of-zonas span { color: #a9b4c6; }
+
+/* ---------- 2. Vitrine dos pins ---------- */
+.of-vitrine {
+    --c: 245, 205, 3;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    grid-template-areas:
+        "foto texto"
+        "selos selos";
+    overflow: hidden;
+    border-color: rgba(var(--c), 0.35);
+    transition: border-color 0.4s;
+}
+.of-vitrine-foto { grid-area: foto; margin: 0; aspect-ratio: 16 / 9; background: #0d1018; }
+.of-vitrine-foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.of-vitrine-texto { grid-area: texto; padding: 26px 26px 18px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.of-vitrine-rotulo { margin: 0; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: #8f9bb0; }
+.of-vitrine-nome { margin: 0; font-size: 1.6rem; color: rgb(var(--c-txt, var(--c))); transition: color 0.4s; }
+.of-vitrine-sub { margin: 0; color: #a9b4c6; }
+.of-vitrine-forja { margin: 10px 0 0; padding-left: 12px; font-style: italic; color: #d4dbe7; line-height: 1.55; border-left: 2px solid rgba(var(--c), 0.7); }
+.of-vitrine-desc { margin: 8px 0 0; font-size: 0.88rem; color: #8f9bb0; line-height: 1.55; }
+
+.of-pin-selos {
+    grid-area: selos;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 14px;
+    padding: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.of-pin-selo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 104px;
+    padding: 6px 4px;
+    font: inherit;
+    font-size: 0.74rem;
+    color: #8f9bb0;
+    background: none;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: color 0.25s;
+}
+.of-pin-selo img {
+    width: 52px;
+    height: 52px;
+    object-fit: cover; /* a imagem do selo é mais larga que alta: o "cover" recorta só o círculo do meio */
+    border-radius: 50%;
+    opacity: 0.55;
+    transition: opacity 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.of-pin-selo:hover img { opacity: 0.9; }
+.of-pin-selo[aria-pressed="true"] { color: #fff; }
+.of-pin-selo[aria-pressed="true"] img {
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 2px rgb(var(--c)), 0 0 18px rgba(var(--c), 0.6);
+}
+.of-pin-selo:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ---------- 3 e 4. Cards de produto ---------- */
+.of-grade { display: grid; gap: 18px; }
+.of-grade-2 { grid-template-columns: repeat(2, 1fr); }
+.of-grade-3 { grid-template-columns: repeat(3, 1fr); }
+
+.of-card {
+    --c: 245, 205, 3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+}
+.of-card:hover,
+.of-card:focus-within {
+    border-color: rgba(var(--c), 0.8);
+    box-shadow: 0 0 22px rgba(var(--c), 0.28), 0 8px 26px rgba(0, 0, 0, 0.4);
+}
+/* Todas as fotos com a mesma proporção: os cards lado a lado ficam da mesma altura */
+.of-arte { aspect-ratio: 4 / 3; overflow: hidden; background: #0d1018; }
+.of-arte img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.of-card:hover .of-arte img { transform: scale(1.04); }
+
+.of-info { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 4px; }
+.of-info h3 { margin: 0; font-size: 1.02rem; }
+.of-sub { margin: 0; color: #8f9bb0; font-size: 0.86rem; }
+.of-ver { margin-top: 8px; font-size: 0.8rem; color: rgba(var(--c), 0.9); opacity: 0.75; transition: opacity 0.25s; }
+.of-card:hover .of-ver { opacity: 1; }
+
+/* O botão fica no título, mas a "capa" dele (::after) cobre o card inteiro */
+.of-abrir {
+    padding: 0;
+    font: inherit;
+    font-weight: 700;
+    color: #f1f4fa;
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+.of-abrir::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.of-abrir:focus-visible { outline: none; }
+.of-card:has(.of-abrir:focus-visible) { outline: 2px solid #fff; outline-offset: 3px; }
+.of-tapete-foto:focus-visible, .of-modal-fechar:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+
+/* ---------- Janela de detalhes ---------- */
+.of-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(4, 6, 10, 0.82);
+    animation: of-fade 0.25s ease-out;
+}
+.of-modal-caixa {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    width: min(1000px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 18px;
+    background: #0e121c;
+    border: 1px solid rgba(var(--c), 0.6);
+    box-shadow: 0 0 40px rgba(var(--c), 0.25);
+}
+.of-modal-arte { background: #05070c; }
+.of-modal-arte img { display: block; width: 100%; height: 100%; max-height: 70vh; object-fit: cover; }
+.of-modal-texto { padding: 30px 26px; display: flex; flex-direction: column; gap: 10px; }
+.of-modal-texto h3 { margin: 0; font-size: 1.4rem; color: #f3f6fb; }
+.of-modal-texto p { margin: 0; color: #c0c9d8; line-height: 1.6; }
+.of-modal-sub { color: #8f9bb0 !important; margin-top: -6px !important; }
+.of-modal-forja { font-style: italic; padding-left: 12px; border-left: 2px solid rgba(var(--c), 0.7); }
+.of-modal-nota { font-size: 0.8rem; color: #7f8aa0 !important; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; margin-top: auto !important; }
+.of-modal-fechar {
+    position: absolute; top: 10px; right: 12px; z-index: 2;
+    width: 36px; height: 36px; font-size: 1.5rem; line-height: 1;
+    color: #fff; background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; cursor: pointer;
+}
+.of-modal-folha { grid-column: 1 / -1; margin: 0; padding: 0 22px 22px; }
+.of-modal-folha img { display: block; width: 100%; border-radius: 10px; border: 1px solid rgba(var(--c), 0.45); }
+.of-modal-folha figcaption { margin-top: 6px; text-align: center; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: #7f8aa0; }
+@keyframes of-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- Telas menores ---------- */
+@media (max-width: 900px) {
+    .of-tapete { grid-template-columns: 1fr; }
+    .of-tapete-foto { aspect-ratio: 3 / 2; }
+    .of-vitrine {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "foto"
+            "selos"
+            "texto";
+    }
+    .of-pin-selos { border-top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .of-grade-3 { grid-template-columns: repeat(2, 1fr); }
+    .of-modal-caixa { grid-template-columns: 1fr; }
+    .of-modal-arte img { max-height: 40vh; }
+}
+@media (max-width: 560px) {
+    .of-grade-2, .of-grade-3 { grid-template-columns: 1fr; }
+    /* No celular os 6 selos ficam numa linha só, menores e sem o nome */
+    .of-pin-selos { flex-wrap: nowrap; gap: 4px; padding: 12px 8px; }
+    .of-pin-selo { width: auto; flex: 1; }
+    .of-pin-selo img { width: 44px; height: 44px; }
+    .of-pin-selo span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .of-zonas li { grid-template-columns: 74px 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .of-tapete, .of-vitrine, .of-card { opacity: 1; transform: none; transition: none; }
+    .pm-slot, .of-modal { animation: none; }
+}

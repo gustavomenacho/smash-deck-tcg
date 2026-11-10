@@ -1,0 +1,1133 @@
+/* ============================================================
+   ESTILOS ESPECÍFICOS DAS SECÇÕES (HOME, LORE, ETC.)
+   ============================================================ */
+
+/* --- HERO SECTION: O PONTO ZERO --- */
+.hero-section {
+    min-height: calc(100vh - 120px);
+    min-height: calc(100svh - 120px); /* celular: desconta a barra de endereço */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.hero-logo-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.hero-logo {
+    max-width: 640px;
+    width: min(100%, 640px);
+    height: auto;
+    filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0));
+    animation: pulseLogo 3s infinite alternate ease-in-out;
+}
+
+@keyframes pulseLogo {
+    0% {
+        transform: scale(0.98);
+        filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0));
+    }
+    100% {
+        transform: scale(1.02);
+        filter: drop-shadow(0 0 35px rgba(90, 90, 90, 0.7));
+    }
+}
+
+.hero-slogan-wrapper {
+    min-height: 40px;
+    margin-bottom: 40px;
+}
+
+.hero-slogan {
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #f0f0f0;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    margin: 0;
+}
+
+/* Linha do autor, logo abaixo do slogan */
+.hero-autor {
+    margin: 14px 0 0;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #aab2c0;
+}
+
+.hero-autor a {
+    color: var(--accent-gold);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.hero-autor a:hover { color: #fff; }
+
+.typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.2rem;
+    background-color: var(--accent-gold);
+    vertical-align: middle;
+    margin-left: 5px;
+    animation: blinkCursor 0.8s infinite;
+}
+
+@keyframes blinkCursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.hero-cta-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--accent-gold);
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: transform 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.hero-cta-btn:hover {
+    color: #fff;
+    transform: translateY(5px);
+}
+
+.hero-cta-icon {
+    font-size: 1.5rem;
+    margin-top: 8px;
+    animation: bounceDown 1.8s infinite;
+}
+
+@keyframes bounceDown {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(8px); }
+    60% { transform: translateY(4px); }
+}
+
+/* --- SECÇÃO: APRESENTAÇÃO ("Que jogo é esse?") --- */
+.confluente-section {
+    max-width: 1100px;
+    width: 92%;
+    margin: 40px auto;
+    padding: clamp(20px, 4vw, 44px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-areas: "texto palco" "stepper stepper";
+    gap: clamp(18px, 3vw, 36px);
+    align-items: center;
+    background: rgba(10, 14, 23, 0.7);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    text-align: left;
+    box-sizing: border-box;
+}
+.confluente-texto { grid-area: texto; min-width: 0; }
+.duelo-palco { grid-area: palco; }
+.confluente-stepper { grid-area: stepper; }
+
+.confluente-kicker {
+    margin: 0 0 8px 0;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8fd3ff;
+}
+
+.confluente-title {
+    font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    margin: 0 0 16px 0;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+.confluente-text {
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    line-height: 1.65;
+    color: #d1d5db;
+    margin: 0 0 20px 0;
+    max-width: 560px;
+}
+.confluente-text b { color: #fff; }
+
+/* Bento 2x2 compacto, vidro fosco */
+.confluente-bento {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-width: 360px;
+}
+.confluente-bento li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.confluente-bento li:hover { transform: scale(1.05); border-color: rgba(245, 205, 3, 0.5); }
+.confluente-bento strong { font-size: 1.5rem; line-height: 1; color: var(--accent-gold); }
+.confluente-bento span { font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase; color: #d1d5db; line-height: 1.2; }
+
+/* Hierarquia dos botões: primário sólido, secundário vazado, terciário em texto */
+.confluente-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.cta-primario, .cta-secundario {
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 13px 24px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.cta-primario {
+    color: #0a0e17;
+    background: var(--accent-gold);
+    border: 1.5px solid var(--accent-gold);
+    box-shadow: 0 0 22px rgba(245, 205, 3, 0.55);
+}
+.cta-primario:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 34px rgba(245, 205, 3, 0.85); }
+.cta-secundario {
+    color: #fff;
+    background: transparent;
+    border: 1.5px solid var(--accent-gold);
+}
+.cta-secundario:hover { background: rgba(245, 205, 3, 0.12); transform: translateY(-2px); }
+.cta-terciario {
+    flex-basis: 100%;
+    font-size: 0.85rem;
+    color: #aab2c0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.cta-terciario:hover { color: #fff; }
+.cta-primario:focus-visible, .cta-secundario:focus-visible, .cta-terciario:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+/* Vitrine 3D: duas lendas em colisão */
+.duelo-palco {
+    position: relative;
+    width: 100%;
+    max-width: 590px;
+    height: 430px;
+    justify-self: center;
+    perspective: 1400px;
+}
+.duelo-lado {
+    position: absolute;
+    top: 0;
+    width: 315px;
+    height: 440px;
+    transform-origin: top left;
+    transition: transform 0.4s ease;
+}
+.duelo-lado .card-container { margin: 0; }
+.duelo-lado.esq { left: 0; transform: scale(0.8) rotateY(-12deg) rotateZ(-4deg); z-index: 1; }
+.duelo-lado.dir { right: 0; transform-origin: top right; transform: scale(0.8) rotateY(12deg) rotateZ(4deg); z-index: 2; }
+.duelo-palco:hover .duelo-lado.esq { transform: scale(0.82) rotateY(-6deg) rotateZ(-2deg) translateX(6px); }
+.duelo-palco:hover .duelo-lado.dir { transform: scale(0.82) rotateY(6deg) rotateZ(2deg) translateX(-6px); }
+.duelo-faisca {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    z-index: 3;
+    padding: 6px 16px;
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    color: #0a0e17;
+    background: var(--accent-gold);
+    border-radius: 6px;
+    box-shadow: 0 0 28px rgba(245, 205, 3, 0.9);
+    pointer-events: none;
+    animation: faiscaPulso 1.6s ease-in-out infinite;
+}
+@keyframes faiscaPulso {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-8deg) scale(1); }
+    50% { transform: translate(-50%, -50%) rotate(-8deg) scale(1.12); }
+}
+
+/* Stepper horizontal: três blocos ligados por uma linha */
+.confluente-stepper {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    counter-reset: passo;
+    position: relative;
+}
+.confluente-stepper::before {
+    content: "";
+    position: absolute;
+    top: 29px;
+    left: 16%;
+    right: 16%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245, 205, 3, 0.6), transparent);
+}
+.confluente-stepper li {
+    counter-increment: passo;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 46px 14px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: #d1d5db;
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+.confluente-stepper li::before {
+    content: counter(passo);
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    color: #0a0e17;
+    background: var(--accent-gold);
+    box-shadow: 0 0 14px rgba(245, 205, 3, 0.6);
+}
+.confluente-stepper b { color: #fff; font-size: 1rem; letter-spacing: 0.5px; }
+.stepper-atributos { display: flex; justify-content: center; gap: 14px; }
+.stepper-atributos i {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-style: normal;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #fff;
+}
+.stepper-atributos img { width: 38px; height: 38px; object-fit: contain; }
+
+@media (max-width: 860px) {
+    .confluente-section {
+        grid-template-columns: 1fr;
+        grid-template-areas: "palco" "texto" "stepper";
+    }
+    .duelo-palco { height: 330px; max-width: 360px; }
+    .duelo-lado.esq, .duelo-lado.dir { transform: scale(0.62) rotateY(0) rotateZ(0); }
+    .duelo-lado.esq { transform: scale(0.62) rotateZ(-5deg); }
+    .duelo-lado.dir { transform: scale(0.62) rotateZ(5deg); }
+    .duelo-palco:hover .duelo-lado { transform: scale(0.62); }
+    .confluente-stepper { grid-template-columns: 1fr; }
+    .confluente-stepper::before { display: none; }
+    .confluente-stepper li { padding: 14px 14px 14px 58px; text-align: left; }
+    .confluente-stepper li::before { top: 50%; left: 14px; transform: translateY(-50%); }
+    .stepper-atributos { justify-content: flex-start; }
+    .confluente-bento { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .duelo-faisca { animation: none; }
+}
+
+/* ============================================================
+   CENA DO ALTAR DO NEXUS (COM ASSETS REAIS E LAYERING)
+   ============================================================ */
+
+.altar-nexus-scene {
+    position: relative;
+    max-width: 1600px; 
+    width: 95%;
+    min-height: 900px; 
+    margin: 40px auto 60px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+}
+
+/* Título e dica do altar: ocupam o espaço onde o painel aparece */
+.altar-intro {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(640px, 90%);
+    text-align: center;
+    z-index: 3;
+    transition: opacity 0.3s ease;
+}
+
+/* Com o painel aberto, o título some (o painel fica no mesmo lugar) */
+.altar-nexus-scene:has(.nexus-hologram-hud.active) .altar-intro {
+    opacity: 0;
+}
+
+.altar-titulo {
+    margin: 0 0 12px;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+}
+
+.altar-dica {
+    margin: 0;
+    color: #cbd5e1;
+    line-height: 1.6;
+}
+
+/* Bolinha colorida antes de ATK, DEF e TECH (no lugar dos emojis, que falham em Windows antigo) */
+.ponto-cor {
+    display: inline-block;
+    width: 0.75em;
+    height: 0.75em;
+    margin-right: 0.45em;
+    border-radius: 50%;
+    vertical-align: -0.05em;
+}
+
+.ponto-atk { background: #ff4d4d; box-shadow: 0 0 6px rgba(255, 77, 77, 0.8); }
+.ponto-def { background: #38a3ff; box-shadow: 0 0 6px rgba(56, 163, 255, 0.8); }
+.ponto-tech { background: #ffd60a; box-shadow: 0 0 6px rgba(255, 214, 10, 0.8); }
+
+.altar-ambient-glow {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 350px;
+    background: radial-gradient(ellipse, rgba(0, 195, 255, 0.12) 0%, rgba(255, 59, 48, 0.08) 45%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.altar-pillars-grid {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    width: 100%;
+    gap: 20px;
+    z-index: 2;
+}
+
+.altar-column {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    max-width: 500px; 
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.altar-column:hover {
+    transform: translateY(-8px);
+}
+
+/* Camada da Energia (Feixe Vertical) */
+.pillar-energy-layer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -250px; 
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: screen;   
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
+}
+
+.img-energy {
+    width: 85%;
+    max-width: 440px; 
+    height: auto;
+    object-fit: contain;
+    opacity: 0; /* Totalmente invisível até colocar o mouse */
+    transform: scale(0.95) translateY(10px);
+    filter: brightness(0.5);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;
+}
+
+/* Energia no Hover */
+.altar-column:hover .img-energy {
+    opacity: 1; 
+    transform: scale(1.1) translateY(-10px); 
+    filter: brightness(1.4) drop-shadow(0 0 30px currentColor);
+}
+
+.col-atk:hover .img-energy { color: rgba(255, 60, 60, 0.8); }
+.col-def:hover .img-energy { color: rgba(0, 195, 255, 0.8); }
+.col-tech:hover .img-energy { color: rgba(255, 215, 0, 0.8); }
+
+/* Camada da Base (Pedestal) */
+.pillar-base-layer {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    /* O mix-blend-mode foi retirado daqui para não afetar o logótipo */
+}
+
+.img-base {
+    width: 100%;
+    max-width: 560px; 
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    mix-blend-mode: lighten; /* Aplicado SOMENTE na imagem da base de pedra */
+}
+
+.altar-column:hover .img-base {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+/* Selo Flutuante centralizado dentro do anel da base */
+.socket-icon-anchor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -62%);
+    z-index: 15; /* Garante que fica num plano absoluto à frente da energia */
+    transition: transform 0.3s ease;
+    animation: floatIcon 3s infinite alternate ease-in-out; 
+}
+
+@keyframes floatIcon {
+    0% { transform: translate(-50%, -58%); }
+    100% { transform: translate(-50%, -65%); }
+}
+
+.socket-icon {
+    width: 144px; /* Tamanho ajustado para 1.5x */
+    height: 144px; 
+    object-fit: contain;
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,1)); /* Sombra reforçada para dar corpo e bloquear a luz traseira */
+}
+
+.icon-def {
+    transform: scale(1.25);
+}
+
+.altar-column:hover .socket-icon-anchor {
+    animation: none;
+    transform: translate(-50%, -75%) scale(1.15);
+}
+
+/* Textos da Coluna */
+.column-meta {
+    text-align: center;
+    z-index: 5;
+    margin-top: 10px;
+}
+
+.column-tag {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+    display: block;
+    margin-bottom: 3px;
+}
+
+.column-desc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.35;
+}
+
+/* ============================================================
+   PAINEL HOLOGRÁFICO CENTRAL (NEXUS HUD)
+   ============================================================ */
+
+.nexus-hologram-hud {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -45%) scale(0.92);
+    width: clamp(340px, 54vw, 820px);
+    background: rgba(8, 12, 22, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(0, 195, 255, 0.6);
+    border-radius: 14px;
+    box-shadow: 0 0 40px rgba(0, 140, 255, 0.4), inset 0 0 20px rgba(0, 195, 255, 0.1);
+    padding: clamp(18px, 2.2vw, 30px) clamp(20px, 2.6vw, 36px);
+    box-sizing: border-box;
+    z-index: 100;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), visibility 0.3s;
+}
+
+.nexus-hologram-hud.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.hud-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.hud-protocol-id {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00e5ff;
+}
+
+.hud-top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Só aparece no celular, onde o painel é fixo na base da tela */
+.hud-close {
+    display: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.hud-status-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #4ade80;
+}
+
+.hud-content-grid {
+    display: grid;
+    grid-template-columns: clamp(130px, 14vw, 190px) 1fr;
+    gap: clamp(18px, 2.4vw, 32px);
+    align-items: start;
+}
+
+.hud-graph-box {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+}
+
+.hud-graph-header {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.hud-bars-visual {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 48px;
+    gap: 3px;
+    margin-bottom: 6px;
+    padding: 0 4px;
+}
+
+.hud-bars-visual span {
+    flex: 1;
+    background: #00e5ff;
+    border-radius: 2px 2px 0 0;
+    box-shadow: 0 0 6px #00e5ff;
+    min-width: 0;
+}
+
+.hud-mini-stats {
+    font-size: 0.65rem;
+    color: #64748b;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hud-title {
+    font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1px;
+    margin: 0 0 6px 0;
+}
+
+.hud-desc {
+    font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+    color: #cbd5e1;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.hud-footer-icons {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    justify-content: flex-end;
+}
+
+.hud-badge {
+    white-space: nowrap;
+    font-size: clamp(0.72rem, 0.9vw, 0.9rem);
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    transition: all 0.25s ease;
+}
+
+.hud-badge.active {
+    background: rgba(0, 229, 255, 0.2);
+    color: #00e5ff;
+    border: 1px solid rgba(0, 229, 255, 0.5);
+}
+
+
+.hud-top3 { display: flex; gap: clamp(10px, 1.4vw, 18px); margin: 0 0 14px; }
+.hud-mini {
+    position: relative;
+    width: clamp(96px, min(10vw, 15vh), 140px);
+    cursor: pointer;
+    border-radius: 8px;
+    outline: none;
+    transition: transform 0.2s ease;
+}
+.hud-mini:hover, .hud-mini:focus-visible { transform: translateY(-4px) scale(1.04); }
+.hud-mini:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.hud-mini-carta { width: 100%; aspect-ratio: 315 / 440; height: auto; overflow: hidden; border-radius: 8px; pointer-events: none; }
+.hud-mini-carta .card-container { zoom: var(--z, 0.317); margin: 0; display: block; }
+/* Legenda embaixo da mini carta: nome e, na linha de baixo, "1º  99 TECH" */
+.hud-mini-nome {
+    display: block;
+    margin-top: 6px;
+    font-size: clamp(0.72rem, 0.9vw, 0.88rem);
+    font-weight: 600;
+    text-align: center;
+    color: #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.hud-mini-valor {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 5px;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+}
+.hud-mini-valor b {
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+.hud-mini-pos {
+    font-weight: 700;
+    color: #64748b;
+}
+.hud-desc { font-style: italic; }
+.hud-footer-icons { align-items: center; }
+.hud-link {
+    margin-right: auto;
+    padding: 0;
+    font: inherit;
+    font-size: clamp(0.75rem, 0.95vw, 0.95rem);
+    color: #8fd3ff;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.hud-link:hover { color: #fff; }
+
+@media (max-width: 900px) {
+    .altar-pillars-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+    .altar-column {
+        width: 100%;
+        max-width: 260px;
+    }
+    .pillar-energy-layer {
+        margin-bottom: -120px;
+    }
+}
+
+/* ============================================================
+   CARROSSEL INFINITO (SHOWCASE HOME)
+   ============================================================ */
+
+.soberanos-showcase {
+    width: 100%;
+    overflow: hidden;
+    padding: 60px 0;
+    background: linear-gradient(to bottom, transparent, rgba(10, 14, 23, 0.9));
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.showcase-title {
+    text-align: center;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    opacity: 0.8;
+}
+
+.carousel-viewport {
+    width: 100%;
+    overflow: hidden;
+    /* Sombras laterais para criar a ilusão de entrada e saída */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.carousel-track {
+    display: flex;
+    gap: 30px;
+    width: max-content;
+    /* Aceleração por GPU estrita */
+    will-change: transform;
+    animation: scrollCarousel 45s linear infinite;
+    padding: 20px 30px 20px 0; /* os 30px finais = gap, para -50% fechar o loop exato */
+}
+
+/* O Segredo: O carrossel pausa se o recrutador passar o rato para interagir com o 3D */
+.carousel-track:hover {
+    animation-play-state: paused;
+}
+
+/* Escala as cartas da home ligeiramente para não ficarem tão massivas */
+.carousel-track .card-container {
+    transform: scale(0.85);
+    margin: -30px -15px; 
+}
+
+@keyframes scrollCarousel {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Move exatos 50% (o primeiro conjunto de 14 cartas) */
+}
+
+/* ============================================================
+   SISTEMA DE INSPEÇÃO (MODAL DE ZOOM 3D DA CARTA)
+   ============================================================ */
+
+.nexus-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(8, 12, 22, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease-in-out;
+}
+
+.nexus-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Carta do zoom: mantém o tamanho original e voa até o centro da tela */
+.card-clone-hologram {
+    position: fixed;
+    z-index: 9999;
+    margin: 0 !important;
+    width: 315px !important;  
+    height: 440px !important; 
+    cursor: pointer;
+    perspective: 1200px;
+    transform-origin: center center;
+    
+    /* Voo suave vetorial de exato 1 segundo */
+    transition: top 1s ease-in-out, 
+                left 1s ease-in-out, 
+                transform 1s ease-in-out;
+    will-change: transform, top, left;
+}
+
+.card-clone-hologram.is-fullscreen {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(var(--zoom, 1.6)) !important;
+}
+
+/* Sombra nas faces: filter no contêiner quebra o 3D e deixa bordas/verso transparentes */
+.card-clone-hologram .face {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+}
+
+/* Núcleo de Rotação: Ativa o processamento 3D real */
+.card-clone-hologram .card-inner {
+    pointer-events: none;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.card-clone-hologram .face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform; 
+}
+
+/* Pausa a esteira no momento em que o mouse pairar sobre a área visível do carrossel */
+.carousel-viewport:hover .carousel-track {
+    animation-play-state: paused;
+}
+/* ============================================================
+   BASE DE PEDRA E RUNAS (antes sem estilo, apareciam como texto solto)
+   ============================================================ */
+.altar-stone-base {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.runic-carvings-line {
+    color: #3a4560;
+    font-size: 1.1rem;
+    letter-spacing: 0.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 0.7;
+    user-select: none;
+}
+
+/* ============================================================
+   CÓDICE: galeria em grade responsiva
+   ============================================================ */
+/* Uso flex em vez de grid: com o grid "auto-fill", as colunas vazias continuavam
+   ocupando espaço e 1 ou 2 cartas filtradas ficavam presas na esquerda.
+   Com flex + justify-content: center, as cartas sempre ficam centralizadas,
+   inclusive a última linha incompleta. */
+#deck-container {
+    display: flex;
+    flex-wrap: wrap;           /* quebra para a linha de baixo quando não cabe */
+    justify-content: center;   /* centraliza o grupo de cartas em cada linha */
+    gap: 8px 40px;             /* espaço entre linhas / entre colunas */
+}
+
+#deck-container .card-container {
+    display: block;
+}
+
+.altar-column {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================================
+   CELULAR E TABLET
+   ============================================================ */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: calc(100vh - 100px);
+        min-height: calc(100svh - 100px);
+        padding: 24px 8px;
+    }
+
+    .hero-slogan {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        padding: 0 8px;
+    }
+
+    .confluente-section {
+        width: 100%;
+        margin: 24px auto;
+    }
+
+    .altar-nexus-scene {
+        min-height: auto;
+        width: 100%;
+        margin: 24px auto 40px;
+    }
+
+    /* No celular o painel abre na base da tela, então o título fica no fluxo normal */
+    .altar-intro {
+        position: static;
+        transform: none;
+        width: auto;
+        margin: 0 8px 32px;
+    }
+
+    .altar-nexus-scene:has(.nexus-hologram-hud.active) .altar-intro {
+        opacity: 1;
+    }
+
+    /* HUD vira uma "folha" fixa na base da tela (no toque não há hover para posicioná-lo) */
+    .nexus-hologram-hud {
+        position: fixed;
+        top: auto;
+        bottom: 16px;
+        left: 50%;
+        width: calc(100vw - 24px);
+        max-height: 60vh;
+        overflow-y: auto;
+        transform: translate(-50%, 24px);
+    }
+
+    .nexus-hologram-hud.active {
+        transform: translate(-50%, 0);
+    }
+
+    .hud-close {
+        display: inline-flex;
+    }
+
+    .hud-content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hud-graph-box {
+        display: none; /* o espaço vai para as mini-cartas */
+    }
+    .hud-top3 { justify-content: center; gap: 8px; }
+    .hud-mini { width: 90px; }
+    .hud-mini-carta { width: 90px; height: 126px; }
+    .hud-footer-icons { flex-wrap: wrap; }
+    .hud-link { flex-basis: 100%; margin-bottom: 4px; }
+
+    .soberanos-showcase {
+        padding: 40px 0;
+    }
+
+    .showcase-title {
+        font-size: 1rem;
+        letter-spacing: 3px;
+    }
+
+    .runic-carvings-line {
+        font-size: 0.9rem;
+    }
+}
+
+/* Telas muito estreitas (iPhone SE 1ª geração, 320px): reduz as cartas da galeria */
+@media (max-width: 359px) {
+    #deck-container .card-container {
+        zoom: 0.8;
+    }
+}
+
+/* Quem prefere menos movimento: o carrossel para e vira uma faixa rolável */
+@media (prefers-reduced-motion: reduce) {
+    .carousel-viewport {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+
+    .carousel-track {
+        animation: none;
+    }
+}
+
+/* --- Chamadas finais (Início, Manual, O Arquiteto) e rodapé --- */
+[data-contato-bloco][hidden] { display: none !important; }
+.home-final {
+    max-width: 760px;
+    width: 90%;
+    margin: 20px auto 70px;
+    padding: clamp(22px, 4vw, 40px);
+    text-align: center;
+    border-radius: 16px;
+    background: radial-gradient(ellipse at top, rgba(245, 205, 3, 0.12), rgba(10, 14, 23, 0.7) 70%);
+    border: 1px solid rgba(245, 205, 3, 0.3);
+    box-sizing: border-box;
+}
+.home-final-titulo {
+    margin: 0 0 10px;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+}
+.home-final p { margin: 0 auto 20px; max-width: 560px; color: #d1d5db; line-height: 1.6; }
+.home-final-acoes { justify-content: center; }
+.arq-contato { max-width: 640px; margin: 30px auto; text-align: center; }
+.arq-contato h2 { color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1.5px; }
+.arq-contato p { color: #d1d5db; line-height: 1.6; }
+.footer-contato { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 8px; }
+.footer-contato:empty { display: none; }
+.contato-link { color: #cbd5e1; text-decoration: underline; text-underline-offset: 3px; }
+.contato-link:hover { color: var(--accent-gold); }
+a.cta-primario, a.cta-secundario { text-decoration: none; display: inline-block; }

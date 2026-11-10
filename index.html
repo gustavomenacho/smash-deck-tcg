@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smash Deck TCG: jogo de cartas autoral com 103 lendas dos games. Projeto de fã, não comercial, feito em HTML, CSS e JavaScript puro.">
+    <meta name="theme-color" content="#0a0e17">
+    <title>Smash Deck TCG | O Confluente</title>
+    <link rel="icon" type="image/png" href="imagens/marca/favicon.png">
+    <!-- CSS: um arquivo por parte do site -->
+    <!-- O "?v=" no fim de cada CSS força o navegador a baixar a versão nova. Mudo o número quando altero o CSS. -->
+    <link rel="stylesheet" href="css/global.css?v=20261103n">
+    <link rel="stylesheet" href="css/layout.css?v=20261103n">
+    <link rel="stylesheet" href="css/cards.css?v=20261103n">
+    <link rel="stylesheet" href="css/sections.css?v=20261103n">
+    <link rel="stylesheet" href="css/codice.css?v=20261103n">
+    <link rel="stylesheet" href="css/ficha.css?v=20261103n">
+    <link rel="stylesheet" href="css/linhagens.css?v=20261103n">
+    <link rel="stylesheet" href="css/lore.css?v=20261103n">
+    <link rel="stylesheet" href="css/ritual.css?v=20261103n">
+    <link rel="stylesheet" href="css/oficina.css?v=20261103n">
+    <link rel="stylesheet" href="css/arquiteto.css?v=20261103n">
+    <link rel="stylesheet" href="css/reveal.css?v=20261103n">
+</head>
+
+<body>
+    <a class="skip-link" href="#game-screens">Pular para o conteúdo</a>
+    <canvas id="astraCanvas" aria-hidden="true"></canvas>
+
+    <!-- Menu fixo no topo (no celular vira uma gaveta lateral) -->
+    <nav id="hud-menu" aria-label="Principal">
+        <!-- Logo: também é o botão para voltar ao Início -->
+        <a href="#home" class="logo-nexus" data-ir-aba="home" aria-label="Smash Deck TCG: voltar ao Início">
+            <img src="imagens/marca/logo-menu.webp" alt="" width="60" height="56" decoding="async">
+        </a>
+
+        <button id="mobile-menu-btn" class="menu-toggle" type="button" aria-label="Abrir menu"
+            aria-expanded="false" aria-controls="nav-links">
+            <span></span><span></span><span></span>
+        </button>
+
+        <ul id="nav-links" class="nav-links">
+            <li><a href="#home" data-target="home" class="active">Início</a></li>
+            <li><a href="#ritual" data-target="ritual">Manual do Jogador</a></li>
+            <li><a href="#codice" data-target="codice">Códice das Lendas</a></li>
+            <li><a href="#linhagens" data-target="linhagens">Linhagens</a></li>
+            <li><a href="#lore" data-target="lore">Crônicas do Confluente</a></li>
+            <li><a href="#relicario" data-target="relicario">Oficina do Nexo</a></li>
+            <li><a href="#arquiteto" data-target="arquiteto">O Arquiteto</a></li>
+        </ul>
+    </nav>
+    <div id="menu-overlay" aria-hidden="true"></div>
+
+    <!-- As abas do site: só uma aparece por vez (navigation.js) -->
+    <main id="game-screens" tabindex="-1">
+        <!-- Aba Início -->
+        <section id="home" class="screen active">
+            <h1 class="sr-only">Smash Deck TCG</h1>
+
+            <!-- Abertura: logo, slogan e botão -->
+            <div class="hero-section">
+                <div class="hero-logo-container">
+                    <img src="imagens/marca/logo-smash-deck.webp" alt="Smash Deck TCG" class="hero-logo"
+                        decoding="async" onerror="this.style.display='none'">
+                </div>
+                <div class="hero-slogan-wrapper">
+                    <h2 class="hero-slogan" aria-label="103 Lendas. Uma Arena. O Fim do Esquecimento."><span
+                            id="typewriter-text" aria-hidden="true"></span><span class="typing-cursor"
+                            aria-hidden="true"></span></h2>
+                    <p class="hero-autor">Projeto de portfólio de
+                        <a href="#arquiteto" data-ir-aba="arquiteto">Gustavo Menacho</a>
+                        · HTML, CSS e JavaScript puro</p>
+                </div>
+                <a href="#confluente-bloco" class="hero-cta-btn" id="btn-desca-nexus">
+                    <span>Desça ao Nexo</span>
+                    <span class="hero-cta-icon" aria-hidden="true">↓</span>
+                </a>
+            </div>
+
+            <!-- O que é o jogo (apresentação para quem chega) -->
+            <div id="confluente-bloco" class="confluente-section">
+                <div class="confluente-texto">
+                    <p class="confluente-kicker">Que jogo é esse?</p>
+                    <h2 class="confluente-title">Os maiores heróis e vilões dos games. Em duelo.</h2>
+                    <p class="confluente-text">
+                        Jogo de cartas para <b>2 Jogadores</b>. Cada carta é uma lenda dos videogames com um poder
+                        único, o <b>Grimório</b>. Monte sua mão, escolha a hora certa de jogar cada lenda e resgate
+                        5 prêmios antes do rival.
+                    </p>
+
+                    <ul class="confluente-bento" aria-label="O jogo em números">
+                        <li><strong>2</strong><span>Jogadores</span></li>
+                        <li><strong>103</strong><span>Lendas</span></li>
+                        <li><strong>6</strong><span>Linhagens</span></li>
+                        <li><strong>5</strong><span>Prêmios p/ vencer</span></li>
+                    </ul>
+
+                </div>
+
+                <!-- Vitrine: duas lendas reais em colisão (montadas por home.js) -->
+                <div class="duelo-palco" id="home-duelo" aria-hidden="true"></div>
+
+                <!-- Rodada em 3 passos; o passo 1 já mostra os três atributos -->
+                <ol class="confluente-stepper" aria-label="Como uma rodada funciona">
+                    <li>
+                        <b>Escolha o desafio</b>
+                        <span class="stepper-atributos">
+                            <i><img src="imagens/atributos/icone-ataque.webp" alt="" loading="lazy">ATK</i>
+                            <i><img src="imagens/atributos/icone-defesa.webp" alt="" loading="lazy">DEF</i>
+                            <i><img src="imagens/atributos/icone-tecnica.webp" alt="" loading="lazy">TECH</i>
+                        </span>
+                    </li>
+                    <li>
+                        <b>Jogue uma lenda</b>
+                        <span>Cada Jogador escolhe uma lenda da mão, e as duas são reveladas juntas.</span>
+                    </li>
+                    <li>
+                        <b>Smash!</b>
+                        <span>O maior valor vence e resgata um prêmio.</span>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- O Altar da Tríade de Essência -->
+            <div class="altar-nexus-scene">
+                <div class="altar-ambient-glow"></div>
+
+                <!-- Título e dica: ficam no lugar onde o painel aparece (o painel cobre os dois) -->
+                <div class="altar-intro">
+                    <p class="confluente-kicker">A Tríade de Essência</p>
+                    <h2 class="altar-titulo">Os três atributos do jogo</h2>
+                    <p class="altar-dica">Passe o mouse (ou toque) em um pilar para ver as 3 lendas mais fortes
+                        naquele atributo e como as 103 se distribuem.</p>
+                </div>
+
+                <!-- Painel Holográfico (invisível por padrão; surge no hover, clique ou foco) -->
+                <div id="nexus-hud-modal" class="nexus-hologram-hud" aria-live="polite">
+                    <div class="hud-top-bar">
+                        <span id="hud-protocol-id" class="hud-protocol-id">NEXUS PROTOCOL // SEC-03</span>
+                        <div class="hud-top-right">
+                            <span class="hud-status-tag">STATUS: ATIVO</span>
+                            <button type="button" class="hud-close" aria-label="Fechar painel">×</button>
+                        </div>
+                    </div>
+
+                    <div class="hud-content-grid">
+                        <div class="hud-graph-box" aria-hidden="true">
+                            <div class="hud-graph-header" id="hud-graph-titulo">DISTRIBUIÇÃO</div>
+                            <div class="hud-bars-visual" id="hud-bars"></div>
+                            <div class="hud-mini-stats">
+                                <span id="hud-media">MÉDIA: –</span>
+                                <span id="hud-total">LENDAS: –</span>
+                            </div>
+                        </div>
+
+                        <div class="hud-formula-details">
+                            <h3 id="hud-title" class="hud-title">OS 3 MAIS FORTES EM ATK</h3>
+                            <div class="hud-top3" id="hud-top3"></div>
+                            <p id="hud-description" class="hud-desc"></p>
+                        </div>
+                    </div>
+
+                    <div class="hud-footer-icons">
+                        <button type="button" class="hud-link" data-ir-home="ritual" id="hud-link-manual">Veja no Manual do Jogador →</button>
+                        <span class="hud-badge" data-type="atk"><span class="ponto-cor ponto-atk" aria-hidden="true"></span>ATK</span>
+                        <span class="hud-badge" data-type="def"><span class="ponto-cor ponto-def" aria-hidden="true"></span>DEF</span>
+                        <span class="hud-badge" data-type="tech"><span class="ponto-cor ponto-tech" aria-hidden="true"></span>TECH</span>
+                    </div>
+                </div>
+
+                <!-- Os 3 Pilares -->
+                <div class="altar-pillars-grid">
+
+                    <!-- Pilar Vermelho: ATK -->
+                    <div class="altar-column col-atk" data-type="atk">
+                        <div class="pillar-energy-layer">
+                            <img src="imagens/altar/energia-vermelha.webp" alt="" class="img-energy">
+                        </div>
+                        <div class="pillar-base-layer">
+                            <img src="imagens/altar/base-vermelha.webp" alt="" class="img-base">
+                            <div class="socket-icon-anchor">
+                                <img src="imagens/atributos/icone-ataque.webp" alt="Selo ATK" class="socket-icon">
+                            </div>
+                        </div>
+                        <div class="column-meta">
+                            <span class="column-tag"><span class="ponto-cor ponto-atk" aria-hidden="true"></span>ATK</span>
+                            <p class="column-desc">A força que consome o vazio.</p>
+                        </div>
+                    </div>
+
+                    <!-- Pilar Azul: DEF -->
+                    <div class="altar-column col-def" data-type="def">
+                        <div class="pillar-energy-layer">
+                            <img src="imagens/altar/energia-azul.webp" alt="" class="img-energy">
+                        </div>
+                        <div class="pillar-base-layer">
+                            <img src="imagens/altar/base-azul.webp" alt="" class="img-base">
+                            <div class="socket-icon-anchor">
+                                <img src="imagens/atributos/icone-defesa.webp" alt="Selo DEF"
+                                    class="socket-icon icon-def">
+                            </div>
+                        </div>
+                        <div class="column-meta">
+                            <span class="column-tag"><span class="ponto-cor ponto-def" aria-hidden="true"></span>DEF</span>
+                            <p class="column-desc">O escudo que protege a memória.</p>
+                        </div>
+                    </div>
+
+                    <!-- Pilar Dourado: TECH -->
+                    <div class="altar-column col-tech" data-type="tech">
+                        <div class="pillar-energy-layer">
+                            <img src="imagens/altar/energia-amarela.webp" alt="" class="img-energy">
+                        </div>
+                        <div class="pillar-base-layer">
+                            <img src="imagens/altar/base-amarela.webp" alt="" class="img-base">
+                            <div class="socket-icon-anchor">
+                                <img src="imagens/atributos/icone-tecnica.webp" alt="Selo TECH" class="socket-icon">
+                            </div>
+                        </div>
+                        <div class="column-meta">
+                            <span class="column-tag"><span class="ponto-cor ponto-tech" aria-hidden="true"></span>TECH</span>
+                            <p class="column-desc">A inteligência que molda a realidade.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Base de pedra do Coliseu -->
+                <div class="altar-stone-base" aria-hidden="true">
+                    <div class="runic-carvings-line">ᛗ ᛖ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛈ ᛇ ᛉ ᛊ ᛏ ᛒ ᛖ ᛚ ᛜ ᛞ ᛟ ᛗ ᛖ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ</div>
+                </div>
+            </div>
+
+            <!-- Carrossel Infinito das Lendas (decorativo; a galeria completa fica no Códice) -->
+            <div class="soberanos-showcase">
+                <h3 class="showcase-title">O Panteão Global</h3>
+                <div class="carousel-viewport">
+                    <div id="home-carousel-track" class="carousel-track">
+                        <!-- As cartas são injetadas aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fim da aba Início -->
+            <div class="home-final">
+                <h2 class="home-final-titulo">Qual lenda vai lutar por você?</h2>
+                <p>São 103 heróis e vilões, cada um com um Grimório único. Escolha a sua e monte a estratégia.</p>
+                <div class="confluente-acoes home-final-acoes">
+                    <button type="button" class="cta-primario" data-ir-home="codice">Explorar o Códice</button>
+                    <button type="button" class="cta-secundario" data-ir-home="ritual">Ver como se joga</button>
+                    <a class="cta-terciario" href="downloads/livro-de-regras-leitura-digital.pdf" download>Baixar o Livro de Regras (Leitura Digital)</a>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="codice" class="screen">
+            <h1 class="screen-title" tabindex="-1">O Códice das 103 Lendas</h1>
+            <p class="codice-intro">Aqui estão todas as lendas do Confluente. Escolha uma linhagem para conhecer o seu bônus ou procure uma lenda pelo nome. Clique (ou toque) em uma carta para abrir a ficha da lenda.</p>
+
+            <div id="codice-painel" class="codice-painel" aria-live="polite"></div>
+
+            <!-- Filtros, busca e vista: ficam abaixo do painel da classe.
+                 A barra "gruda" embaixo do menu quando a pessoa rola as cartas (position: sticky no CSS). -->
+            <div id="codice-controles" class="codice-controles">
+                <!-- Filtro em duas etapas: o menu de personagem só libera depois de escolher a classe -->
+                <div class="codice-filtros">
+                    <label class="filtro">
+                        <span class="filtro-rotulo">1. Classe</span>
+                        <select id="filtro-classe">
+                            <option value="">Todas as classes</option>
+                        </select>
+                    </label>
+                    <label class="filtro">
+                        <span class="filtro-rotulo">2. Personagem</span>
+                        <select id="filtro-lenda" disabled>
+                            <option value="">Escolha a classe</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="codice-ferramentas">
+                    <label class="busca">
+                        <span class="sr-only">Buscar lenda</span>
+                        <input id="codice-busca" type="search" placeholder="Buscar…" autocomplete="off">
+                    </label>
+                    <label class="filtro filtro-ordem">
+                        <span class="filtro-rotulo">Ordenar por</span>
+                        <select id="filtro-ordem">
+                            <!-- Os atributos ordenam do maior para o menor -->
+                            <option value="numero">Número</option>
+                            <option value="nome">Nome</option>
+                            <option value="atk">ATK</option>
+                            <option value="def">DEF</option>
+                            <option value="tech">TECH</option>
+                        </select>
+                    </label>
+                    <!-- No celular só aparecem os ícones; o texto continua para o leitor de tela -->
+                    <div id="codice-vista" class="vista-toggle" role="group" aria-label="Modo de visualização">
+                        <button type="button" data-vista="grade" aria-pressed="true">
+                            <svg class="vista-icone" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
+                            <span class="vista-texto">Grade</span>
+                        </button>
+                        <button type="button" data-vista="carrossel" aria-pressed="false">
+                            <svg class="vista-icone" viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="3" width="8" height="14" rx="1.5"/><rect x="1" y="5" width="3" height="10" rx="1"/><rect x="16" y="5" width="3" height="10" rx="1"/></svg>
+                            <span class="vista-texto">Carrossel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contagem + dica discreta de como abrir a ficha (no celular o texto diz "Toque") -->
+            <p class="codice-contagem">
+                <span id="codice-contagem"></span>
+                <span class="codice-dica" aria-hidden="true">
+                    <span class="dica-mouse">Clique em uma carta para ver a ficha</span>
+                    <span class="dica-toque">Toque em uma carta para ver a ficha</span>
+                </span>
+            </p>
+
+            <div id="codice-palco" class="codice-palco">
+                <button type="button" id="codice-anterior" class="seta seta-ant" aria-label="Carta anterior">‹</button>
+                <div id="deck-container"></div>
+                <button type="button" id="codice-proxima" class="seta seta-prox" aria-label="Próxima carta">›</button>
+            </div>
+            <!-- Botão "voltar ao topo": aparece depois de descer bastante (codice.js) -->
+            <button type="button" id="codice-topo" class="botao-topo" aria-label="Voltar ao topo do Códice">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4 L4 10.5 M10 4 L16 10.5 M10 4 V16"/></svg>
+            </button>
+
+            <div id="codice-vazio" class="codice-vazio" hidden>
+                <p>Nenhuma lenda encontrada neste filtro.</p>
+                <button type="button" id="codice-limpar" class="codice-btn">Limpar filtros</button>
+            </div>
+        </section>
+
+        <section id="linhagens" class="screen">
+            <h1 class="screen-title" tabindex="-1">Linhagens da Alma</h1>
+            <p class="codice-intro">Cada lenda pertence a uma linhagem, e cada linhagem muda a forma de jogar. Escolha uma para ver como ela joga, quais são os seus pontos fortes e por que as suas lendas foram escolhidas.</p>
+            <!-- Tudo abaixo é montado por js/modules/linhagens.js na primeira visita -->
+            <div id="linha-runas" class="runas" role="group" aria-label="Escolher linhagem"></div>
+            <div id="linha-painel" class="linha-painel" aria-live="polite"></div>
+        </section>
+        <section id="lore" class="screen">
+            <div class="lore-progresso" aria-hidden="true"><span></span></div>
+
+            <header class="lore-hero">
+                <!-- Cartas dispersas que se unem ao rolar (montadas por lore.js) -->
+                <div class="lore-fragmentos" aria-hidden="true"></div>
+                <div class="lore-luz" aria-hidden="true"></div>
+                <div class="lore-hero-texto">
+                    <p class="lore-sobretitulo">O Despertar das Lendas</p>
+                    <h1 class="screen-title lore-titulo" tabindex="-1">Crônicas do Confluente</h1>
+                    <p class="lore-subtitulo">Do início dos tempos ao ápice da batalha</p>
+                    <!-- Preenchido por lore.js, que conta as palavras de cada capítulo -->
+                    <p class="lore-tempo" id="lore-tempo"></p>
+                    <a href="#cap-1" class="lore-descer" data-cap-ir="cap-1">Começar a leitura <span aria-hidden="true">↓</span></a>
+                </div>
+            </header>
+
+            <div class="lore-layout">
+                <nav class="lore-indice" aria-label="Capítulos da lore">
+                    <ol>
+                        <li><a href="#cap-1" data-cap-ir="cap-1"><b>I</b><span>A Grande Convergência</span></a></li>
+                        <li><a href="#cap-2" data-cap-ir="cap-2"><b>II</b><span>A Geografia do Impossível</span></a></li>
+                        <li><a href="#cap-3" data-cap-ir="cap-3"><b>III</b><span>O Tecelão de Destinos</span></a></li>
+                        <li><a href="#cap-4" data-cap-ir="cap-4"><b>IV</b><span>O Legado Final</span></a></li>
+                    </ol>
+                </nav>
+
+                <div class="lore-corpo">
+
+                    <!-- ============ CAPÍTULO I ============ -->
+                    <article class="lore-cap" id="cap-1" data-aura="215, 225, 255" aria-labelledby="cap-1-t">
+                        <header class="lore-cap-topo">
+                            <span class="lore-numeral" aria-hidden="true">I</span>
+                            <h2 id="cap-1-t">A Grande Convergência</h2>
+                        </header>
+
+                        <section class="lore-bloco">
+                            <h3>O Prelúdio do Infinito</h3>
+                            <p class="lore-abre">Imagine que o multiverso era como uma teia gigante e perfeita. Cada fio dessa teia era um mundo diferente. De um lado, reinos cheios de magia e espadas; do outro, cidades de aço iluminadas por neon, ou até galáxias distantes perdidas no espaço.</p>
+                            <p>Cada mundo vivia na sua própria bolha, em paz. Os heróis de um lugar nunca cruzavam o caminho dos vilões de outro. A regra era clara: cada um na sua realidade.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>A Sombra do Olvido</h3>
+                            <p>Mas essa paz não durou para sempre. Das partes mais escuras e esquecidas do espaço, surgiu uma ameaça silenciosa: <strong>O Olvido</strong>. Ele não era um exército cheio de monstros ou um vilão com planos malignos. Era uma força vazia e faminta.</p>
+                            <p>O Olvido não queria apenas destruir as coisas. O seu grande objetivo era apagar tudo da existência. Por onde ele passava, mundos inteiros simplesmente sumiam como se nunca tivessem existido. Cidades desapareciam sem deixar poeira e memórias de heróis viravam fumaça. O universo estava sendo devorado, caindo num vazio absoluto.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Momento da Ruptura</h3>
+                            <p>Quando tudo parecia perdido e a última luz estava prestes a apagar, o multiverso reagiu. Num verdadeiro instinto de sobrevivência, a magia e a física entraram em colapso.</p>
+                            <p>As barreiras invisíveis que separavam os mundos quebraram como vidro! Horizontes que nunca deveriam se cruzar bateram de frente. Reinos inteiros foram arrancados de seus lugares e jogados uns contra os outros no espaço. Foi o maior e mais caótico evento da história: <strong>A Convergência</strong>.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Nascimento do Confluente</h3>
+                            <p>Dessa batida cósmica, sobrou um cenário impossível. No meio de toda a destruição, os pedaços dos mundos que sobreviveram se juntaram como um grande quebra-cabeça maluco. Esse novo lugar foi chamado de <strong>O Confluente</strong>.</p>
+                            <p>Imagine só: castelos medievais flutuando em cima de desertos radioativos, e templos divinos caindo aos pedaços do lado de naves espaciais. Era a última ilha de vida no meio do nada.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Legado de Sangue e Cinzas</h3>
+                            <p>A Convergência salvou o que restou, mas cobrou um preço alto. As maiores lendas dos games foram arrancadas de suas casas e de suas histórias.</p>
+                            <p>Agora, presos nesse novo mundo bizarro, a única coisa que vale alguma coisa é a memória. Quem não luta, desaparece. Quem é esquecido, é engolido de vez pelo Olvido. A guerra não é mais por reinos ou coroas, mas para continuar existindo. E no meio dessa loucura, você e os outros Mestres entram em cena: é hora de invocar esses heróis e lutar para que eles nunca sejam apagados.</p>
+                        </section>
+                    </article>
+
+                    <!-- ============ CAPÍTULO II ============ -->
+                    <article class="lore-cap" id="cap-2" data-aura="90, 200, 200" aria-labelledby="cap-2-t">
+                        <header class="lore-cap-topo">
+                            <span class="lore-numeral" aria-hidden="true">II</span>
+                            <h2 id="cap-2-t">A Geografia do Impossível</h2>
+                        </header>
+
+                        <section class="lore-bloco">
+                            <h3>O Horizonte Fragmentado</h3>
+                            <p class="lore-abre">Esqueça qualquer mapa que você já viu. O Confluente não foi criado pela natureza. Ele nasceu da batida violenta de memórias e destinos. Imagine um mundo que funciona como um espelho quebrado. Cada caco é um pedaço de uma realidade que não existe mais. Tudo fica flutuando por causa de uma gravidade maluca.</p>
+                            <p>Aqui, a lógica não existe. Você pode olhar para cima e ver um castelo gótico flutuante fazendo sombra numa avenida de asfalto rachado. Letreiros de neon brilham do lado de templos de deuses esquecidos. Cogumelos gigantes crescem nas carcaças de naves espaciais colossais. Rios de energia pura cortam esgotos de cidades tomadas pelo crime.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Tempo Congelado</h3>
+                            <p>No Confluente, relógios são lixo. O sol pode ficar parado num eterno fim de tarde sobre um deserto mutante. Dando apenas dois passos, você pode entrar numa nevasca infinita caindo sobre ruínas tecnológicas. O tempo não passa. Ele pulsa.</p>
+                            <p>As lendas dos games não envelhecem. A força de cada uma brilha ou apaga dependendo das vitórias na Arena. O próprio cenário muda de acordo com quem está pisando ali. Uma lenda muito poderosa pode fazer o ambiente ao redor se transformar para lembrar o seu mundo de origem só por estar presente.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>A Arena do Nexo: O Olho do Furacão</h3>
+                            <p>Bem no meio desse caos maluco fica a <strong>Arena do Nexo</strong>. É o ponto exato onde todas as energias do multiverso se cruzam. Esse é o lugar mais sagrado e perigoso de toda a existência.</p>
+                            <p>A Arena do Nexo não é um palco normal de luta. Ela é viva. O chão e as paredes mudam de acordo com os lutadores. Se dois Soberanos se enfrentam, as pedras brilham com luz sagrada. Se as Forças das Trevas dominam o campo, o solo fica frio e assustador.</p>
+                            <p>Essa Arena não foi feita para diversão. Ela foi feita para sobrevivência. É o único lugar onde o poder de uma lenda é testado ao limite, sem nenhuma proteção do seu mundo natal.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>A Lei da Sobrevivência</h3>
+                            <p>Mas por que essas lendas continuam lutando? No Confluente, a resposta é simples: para não sumir.</p>
+                            <p>Nesse mundo quebrado, você só existe se for lembrado. Enquanto um herói ou vilão tiver forças para lutar e vencer, ele continua real. Se alguém aceita a derrota ou desiste de tentar, o Olvido engole essa pessoa na mesma hora.</p>
+                            <p>Lutar na Arena do Nexo é a única forma de provar o seu valor. Cada golpe e cada habilidade ativada é um grito para o universo dizendo: &quot;Eu ainda estou aqui! Eu ainda existo!&quot;. Ser nocauteado significa ser jogado para o esquecimento. Vencer é garantir que a sua história continue viva por mais um dia.</p>
+                            <blockquote class="lore-citacao">Aqui, o chão é feito de memórias antigas. O ar que se respira é feito de pura força de vontade. Não pare de lutar. Se você parar, vira só mais uma sombra perdida nas ruínas do tempo.</blockquote>
+                        </section>
+                    </article>
+
+                    <!-- ============ CAPÍTULO III ============ -->
+                    <article class="lore-cap" id="cap-3" data-aura="245, 205, 3" aria-labelledby="cap-3-t">
+                        <header class="lore-cap-topo">
+                            <span class="lore-numeral" aria-hidden="true">III</span>
+                            <h2 id="cap-3-t">O Tecelão de Destinos</h2>
+                        </header>
+
+                        <section class="lore-bloco">
+                            <h3>A Âncora no Meio do Caos</h3>
+                            <p class="lore-abre">Depois da Convergência, as grandes lendas viraram apenas sombras. Sem os seus mundos originais, elas flutuam pelo Confluente como fantasmas ou memórias vivas. Sozinhas, elas não têm força física para enfrentar o Olvido. São como pequenas chamas prestes a apagar no meio de uma tempestade.</p>
+                            <p>Para ganharem vida de verdade, elas precisam de um farol. <em>Elas precisam de você.</em></p>
+                            <p>Você é o <strong>Mestre de Deck</strong>, também conhecido como o <strong>Tecelão de Destinos</strong>. No meio de toda essa loucura do multiverso, você é a âncora. A sua força de vontade é o que dá peso às espadas, fôlego aos pulmões e realidade aos feitiços. Sem você, esses heróis são apenas sussurros no vazio. Com você, eles viram verdadeiros deuses na Arena.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Dom da Sincronia</h3>
+                            <p>Não é qualquer um que consegue andar pelo Confluente. Ser um Mestre de Deck exige um dom muito raro. É a capacidade de sintonizar a sua mente com a energia das almas perdidas. Quando você segura uma carta do Smash Deck, você não está tocando apenas em papel e tinta. Você está criando uma ponte mental com a essência de um guerreiro.</p>
+                            <p>Essa conexão mágica é o que permite visualizar estratégias de combate incríveis. Você não apenas joga uma carta na mesa. Você puxa uma lenda direto do Limbo e divide a sua própria energia com ela para que possa lutar mais uma vez.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Cofre de Almas: O Seu Deck</h3>
+                            <p>O seu baralho não é um simples monte de cartas. Ele é o seu artefato mais valioso. Ele funciona como um cofre mágico. É ali que as memórias e os poderes das lendas ficam protegidos contra a força do esquecimento.</p>
+                            <p>Cada carta é um contrato de lealdade fechado com a própria realidade. No momento em que uma carta é jogada na Arena, acontece um verdadeiro grito de guerra dimensional. É o som de uma história inteira sendo reescrita num segundo. O impacto desse chamado faz as paredes do Nexo tremerem.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Peso do Legado</h3>
+                            <p>Ser um Mestre de Deck é uma honra, mas também é um peso gigantesco. Você não busca apenas ganhar partidas e fama. Você é o último guardião da história de mundos que não existem mais. Se você falhar, se a sua vontade quebrar ou se o seu baralho acabar, a ligação se rompe.</p>
+                            <p>Quando um Mestre perde a sua conexão, as lendas que ele comandava são engolidas pelo esquecimento para sempre. Por isso, cada duelo na Arena do Nexo é uma luta real pela sobrevivência. Você não está apenas jogando um jogo. Você está garantindo que o legado do Mario, a fúria do Kratos e a mira do Arthur Morgan nunca sumam da existência.</p>
+                            <blockquote class="lore-citacao">O baralho nas suas mãos carrega o peso de mil mundos. Escolha os seus aliados com sabedoria. Afinal, você é a única coisa que separa todos eles do nada absoluto.</blockquote>
+                        </section>
+                    </article>
+
+                    <!-- ============ CAPÍTULO IV ============ -->
+                    <article class="lore-cap" id="cap-4" data-aura="245, 205, 3" aria-labelledby="cap-4-t">
+                        <header class="lore-cap-topo">
+                            <span class="lore-numeral" aria-hidden="true">IV</span>
+                            <h2 id="cap-4-t">O Legado Final</h2>
+                        </header>
+
+                        <section class="lore-bloco">
+                            <h3>A Luta Sem Fim</h3>
+                            <p class="lore-abre">No Confluente, a paz não existe. Se o combate parar, é porque o esquecimento venceu. A batalha no Smash Deck é um ciclo eterno, uma dança mortal entre a luz e a sombra, o aço e a magia. Enquanto existir uma lenda com vontade de lutar e um Mestre com coragem para guiar, o universo estará a salvo.</p>
+                            <p>A Convergência não foi um evento isolado que já passou. Ela é um pulso constante. A cada nova batida do coração do multiverso, novos heróis são puxados dos seus mundos direto para o Nexo. Reinos que antes eram apenas lendas perdidas ressurgem das cinzas, trazendo novos perigos, novos segredos e glórias inéditas.</p>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>A Ascensão do Guardião</h3>
+                            <p>O seu caminho como Mestre de Deck está apenas começando. A Arena não exige apenas força bruta. Ela exige <strong>Equilíbrio</strong>. Para se tornar o <strong>Supremo Guardião do Confluente</strong>, você precisa ir além de uma única facção.</p>
+                            <ul class="lore-lista">
+                                <li><strong>Colecione as Lendas:</strong> Resgate as almas perdidas das garras do Olvido e dê a elas um novo lar seguro no seu baralho.</li>
+                                <li><strong>Domine as Linhagens:</strong> Entenda a fúria dos Soberanos, a ambição das Trevas e a técnica dos Mestres. Sinta a garra dos Sentinelas, a lealdade do Crime e a loucura do Caos.</li>
+                                <li><strong>Escreva sua História:</strong> Cada duelo vencido é uma nova linha gravada para sempre nas paredes de cristal da Arena do Nexo.</li>
+                            </ul>
+                        </section>
+
+                        <section class="lore-bloco">
+                            <h3>O Novo Capítulo</h3>
+                            <p>Nesse domínio, o fim é apenas uma transição. As realidades antigas podem ter caído, mas a vontade de lutar continua intacta. Você segura nas suas mãos o futuro de mil eras. O poder de decidir quais histórias merecem durar para sempre é totalmente seu.</p>
+                            <p>Prepare o seu espírito, sintonize as suas cartas e aceite o seu destino. A Arena está pronta. As lendas estão aguardando. E, acima de tudo, lembre-se da lei mais absoluta deste novo mundo:</p>
+                            <blockquote class="lore-citacao lore-final">No Nexo, as histórias nunca terminam. Elas apenas ganham um novo capítulo.</blockquote>
+                            <div class="lore-cta">
+                                <button type="button" class="lore-botao" data-ir="codice">Convoque sua Lenda</button>
+                                <button type="button" class="lore-botao lore-botao-sec" data-ir="linhagens">Conheça as Linhagens</button>
+                            </div>
+                            <p class="lore-assinatura">Gustavo Menacho <span>—</span> Arquiteto do Confluente</p>
+                        </section>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <section id="ritual" class="screen">
+            <header class="ritual-topo">
+                <p class="lore-sobretitulo">O Ritual do Nexo</p>
+                <h1 class="screen-title" tabindex="-1">Manual do Jogador</h1>
+                <p class="ritual-lead">Tudo o que um Jogador precisa para entrar na Arena: a carta, a preparação, o turno, a conta do Poder Astral e como a partida termina.</p>
+                <ul class="ritual-fatos" aria-label="Resumo do jogo">
+                    <li><b>2</b> Jogadores</li>
+                    <li><b>50</b> cartas cada</li>
+                    <li><b>5</b> prêmios no Relicário</li>
+                    <li>média de <b>7 a 8</b> turnos por partida</li>
+                </ul>
+            </header>
+
+            <!-- Resumo para quem quer começar a jogar logo -->
+            <section class="rit-resumo" aria-labelledby="rit-resumo-t">
+                <h2 id="rit-resumo-t">Regras em 1 minuto</h2>
+                <ol>
+                    <li><b>Objetivo.</b> Resgate os <strong>5 prêmios</strong> do seu Relicário antes do rival. <a href="#rit-vitoria" data-rit-ir="rit-vitoria">Ver detalhes</a></li>
+                    <li><b>Preparação.</b> Cada Jogador tem 50 cartas: <strong>5 na mão</strong>, <strong>5 no Relicário</strong> (os prêmios) e 40 no baralho. <a href="#rit-preparacao" data-rit-ir="rit-preparacao">Ver detalhes</a></li>
+                    <li><b>Turno.</b> Os dois compram 2 cartas, o Atacante escolhe o desafio (<strong>ATK, DEF ou TECH</strong>) e cada um revela 1 lenda da mão. <a href="#rit-turno" data-rit-ir="rit-turno">Ver detalhes</a></li>
+                    <li><b>Smash!</b> Vence o maior <strong>Poder Astral</strong> (valor da carta + Bônus de Classe + Grimório). O perdedor vai para o Abismo e o vencedor resgata 1 prêmio. <a href="#rit-poder" data-rit-ir="rit-poder">Ver detalhes</a></li>
+                </ol>
+            </section>
+
+            <nav class="ritual-indice" aria-label="Seções do manual">
+                <ol>
+                    <li><a href="#rit-anatomia" data-rit-ir="rit-anatomia">Anatomia</a></li>
+                    <li><a href="#rit-preparacao" data-rit-ir="rit-preparacao">Preparação</a></li>
+                    <li><a href="#rit-turno" data-rit-ir="rit-turno">Turno</a></li>
+                    <li><a href="#rit-poder" data-rit-ir="rit-poder">Poder Astral</a></li>
+                    <li><a href="#rit-estigmas" data-rit-ir="rit-estigmas">Estigmas</a></li>
+                    <li><a href="#rit-vitoria" data-rit-ir="rit-vitoria">Vitória</a></li>
+                    <li><a href="#rit-duvidas" data-rit-ir="rit-duvidas">Dúvidas e Glossário</a></li>
+                </ol>
+            </nav>
+
+            <!-- 1. ANATOMIA -->
+            <section class="rit-secao" id="rit-anatomia" aria-labelledby="rit-anatomia-t">
+                <header class="rit-cab"><span class="rit-num">1</span><div><h2 id="rit-anatomia-t">Anatomia da Carta</h2><p>Cada carta é um Contrato de Lealdade e um receptáculo para a essência de um herói. Toque nos pontos de brilho (ou nos textos ao lado) para destacar cada parte.</p></div></header>
+                <div class="anatomia">
+                    <div class="anatomia-palco" id="anatomia-palco"></div>
+                    <div class="anatomia-legenda" id="anatomia-legenda" aria-live="polite">
+                        <div class="anat-item" data-parte="classe">
+                            <h3>Selo de Classe</h3>
+                            <p>Fica no topo da carta e identifica a <strong>Linhagem</strong> da alma da lenda: Soberanos, Trevas, Combate, Sentinelas, Crime ou Caos. Não é só enfeite: indica qual <strong>Aura de Classe</strong> (bônus passivo) será somada ao Poder Astral durante o confronto.</p>
+                            <button type="button" class="lore-link" data-ir="linhagens">Ver as seis linhagens →</button>
+                        </div>
+                        <div class="anat-item" data-parte="prioridade">
+                            <h3>Círculo de Prioridade</h3>
+                            <p>É a <strong>Velocidade de Reação</strong> da lenda, de <strong>I a IV</strong>. Determina a ordem em que as habilidades se manifestam: quem tem a prioridade mais alta (mais perto de I) molda a realidade antes do oponente.</p>
+                        </div>
+                        <div class="anat-item" data-parte="triade">
+                            <h3>Tríade de Essência</h3>
+                            <p>Os três valores puros que regem toda alma na Arena:</p>
+                            <ul class="anat-lista">
+                                <li><span class="chip-atk">ATK</span> Ataque: força bruta e vontade ofensiva.</li>
+                                <li><span class="chip-def">DEF</span> Defesa: resiliência espiritual para suportar impactos.</li>
+                                <li><span class="chip-tech">TECH</span> Técnica: inteligência, perícia e habilidades mágicas.</li>
+                            </ul>
+                        </div>
+                        <div class="anat-item" data-parte="grimorio">
+                            <h3>Grimório</h3>
+                            <p>O compartimento inferior guarda o <strong>Efeito Especial</strong> único da lenda: a memória viva de uma grande façanha. Quando ativado, pode distorcer as regras, aplicar <strong>Estigmas</strong> ou conceder bônus temporários.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PREPARAÇÃO -->
+            <section class="rit-secao" id="rit-preparacao" aria-labelledby="rit-prep-t">
+                <header class="rit-cab"><span class="rit-num">2</span><div><h2 id="rit-prep-t">O Ritual de Preparação</h2><p>Antes de as lendas colidirem, cada Jogador ancora a sua presença na Arena.</p></div></header>
+                <ol class="prep-passos">
+                    <li data-passo="0"><b>O Ritual das 103.</b> As 103 lendas se dividem: <strong>50 cartas</strong> para cada Jogador e as <strong>3 restantes</strong> ficam de fora da partida, nas margens do Olvido, longe de qualquer Jogador.</li>
+                    <li data-passo="1"><b>Mão inicial.</b> Compre as <strong>5 primeiras cartas</strong> do topo do baralho. É a sua mão de combate.</li>
+                    <li data-passo="2"><b>O Relicário.</b> Coloque as <strong>5 cartas seguintes viradas para baixo</strong>. São os seus prêmios: a sua persistência. <em>Não são cartas extras: saem do seu próprio baralho de 50.</em></li>
+                    <li data-passo="3"><b>A Iniciativa.</b> Um sorteio decide quem é o <strong>Atacante</strong> (propõe o desafio) e quem é o <strong>Guardião</strong> (defende a realidade do Nexo).</li>
+                </ol>
+                <div class="conta50" role="group" aria-labelledby="conta50-t">
+                    <h3 id="conta50-t">A conta das 50 cartas</h3>
+                    <p class="conta50-eq" aria-label="5 na mão, mais 5 no Relicário, mais 40 no baralho, igual a 50 cartas">
+                        <span class="c-mao"><b>5</b>na mão</span><i aria-hidden="true">+</i>
+                        <span class="c-relic"><b>5</b>no Relicário<small>os prêmios</small></span><i aria-hidden="true">+</i>
+                        <span class="c-deck"><b>40</b>no baralho</span><i aria-hidden="true">=</i>
+                        <span class="c-total"><b>50</b>cartas suas</span>
+                    </p>
+                    <ul>
+                        <li><strong>Os prêmios são cartas suas.</strong> Eles são separados do seu próprio baralho na preparação e ficam virados para baixo.</li>
+                        <li><strong>Ao vencer um Smash!</strong>, você vira a carta do topo do Relicário e a coloca na mão. É assim que um prêmio vira uma carta jogável.</li>
+                        <li><strong>Ao resgatar os 5 prêmios</strong>, você vence a partida.</li>
+                        <li><strong>As 3 cartas que sobram</strong> da divisão (103 − 50 − 50) são outra coisa: ficam fora da partida e não viram prêmio de ninguém.</li>
+                    </ul>
+                </div>
+                <div class="tapete" id="tapete" aria-label="Diagrama do campo de batalha">
+                    <div class="zona zona-relicario"><span class="zona-nome">Relicário</span><div class="slots" id="slots-relicario"></div><span class="zona-sub">5 prêmios (viradas para baixo)</span></div>
+                    <div class="zona zona-arena"><span class="zona-nome">Arena</span><span class="zona-sub">onde as lendas colidem</span></div>
+                    <div class="zona zona-abismo"><span class="zona-nome">Abismo</span><div class="pilha" id="pilha-abismo"></div><span class="zona-sub" id="contador-abismo">vazio no início</span></div>
+                    <div class="zona zona-mao"><span class="zona-nome">Mão</span><div class="slots" id="slots-mao"></div><span class="zona-sub">5 cartas iniciais (limite: 7)</span></div>
+                    <div class="zona zona-deck"><span class="zona-nome">Baralho</span><div class="pilha" id="pilha-deck"></div><span class="zona-sub" id="contador-deck">50 cartas</span></div>
+                </div>
+                <div class="tapete-acoes"><button type="button" class="lore-botao lore-botao-sec" id="tapete-repetir">↻ Repetir a preparação</button></div>
+            </section>
+
+            <!-- 3. TURNO -->
+            <section class="rit-secao" id="rit-turno" aria-labelledby="rit-turno-t">
+                <header class="rit-cab"><span class="rit-num">3</span><div><h2 id="rit-turno-t">O Fluxo do Turno</h2><p>O tempo no Nexo pulsa em ciclos. Em cada turno, um Jogador ataca e o outro guarda; no fim, os papéis se invertem.</p></div></header>
+                <ol class="linha-turno">
+                    <li class="fase fase-dadiva">
+                        <div class="fase-icone" aria-hidden="true"><span class="mini-carta"></span><span class="mini-carta"></span></div>
+                        <div class="fase-texto">
+                            <h3><small>Fase 1</small> Fase de Dádiva</h3>
+                            <ul>
+                                <li><strong>Os dois</strong> Jogadores compram <strong>2 cartas</strong>.</li>
+                                <li><strong>Limite de Persistência:</strong> a mão aguenta no máximo <strong>7 cartas</strong>. O excedente vai para o Abismo, à sua escolha.</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="fase fase-desafio">
+                        <div class="fase-icone fase-triade" aria-hidden="true"><img src="imagens/atributos/icone-ataque.webp" alt=""><img src="imagens/atributos/icone-defesa.webp" alt=""><img src="imagens/atributos/icone-tecnica.webp" alt=""></div>
+                        <div class="fase-texto">
+                            <h3><small>Fase 2</small> O Desafio</h3>
+                            <ul>
+                                <li>O <strong>Atacante</strong> escolhe uma das três forças: <span class="chip-atk">ATK</span> <span class="chip-def">DEF</span> ou <span class="chip-tech">TECH</span>.</li>
+                                <li>A decisão obriga o <strong>Guardião</strong> a responder na mesma frequência, testando a especialidade da sua lenda.</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="fase fase-embate">
+                        <div class="fase-icone fase-smash" aria-hidden="true"><span class="smash-a"></span><span class="smash-b"></span><span class="smash-texto">SMASH!</span></div>
+                        <div class="fase-texto">
+                            <h3><small>Fase 3</small> O Embate (Smash!)</h3>
+                            <ul>
+                                <li>Cada Jogador escolhe <strong>1 lenda da mão</strong> e as duas são reveladas <strong>ao mesmo tempo</strong>.</li>
+                                <li>O impacto desperta os Grimórios e prepara o cálculo do Poder Astral.</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="fase fase-fim">
+                        <div class="fase-icone" aria-hidden="true"><span class="troca">⇄</span></div>
+                        <div class="fase-texto">
+                            <h3><small>Fim do turno</small> Os papéis se invertem</h3>
+                            <ul>
+                                <li>Quem foi Atacante vira Guardião, e vice-versa. Assim os dois escolhem o atributo em turnos alternados.</li>
+                            </ul>
+                        </div>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- 4. PODER ASTRAL -->
+            <section class="rit-secao" id="rit-poder" aria-labelledby="rit-poder-t">
+                <header class="rit-cab"><span class="rit-num">4</span><div><h2 id="rit-poder-t">O Julgamento do Poder Astral</h2><p>Depois do Smash!, é hora dos números. Siga esta ordem para nenhum efeito ser ignorado.</p></div></header>
+                <ol class="resolucao">
+                    <li><b>Marcadores.</b> Estigmas e redutores deixados por um turno anterior entram na lenda (ex.: ela nasce Obscurecida).</li>
+                    <li><b>Supressão.</b> Os Grimórios que <strong>anulam</strong> outros agem primeiro, em ordem de Prioridade. Um Grimório anulado não faz nada neste Smash!.</li>
+                    <li><b>Execução.</b> Os Grimórios restantes agem por Prioridade: <strong>I, II, III, IV</strong>. Se as duas lendas têm a mesma, o <strong>Guardião</strong> age primeiro. Eles mudam o desafio, aplicam estigmas e somam ou reduzem valores.</li>
+                    <li><b>Cálculo.</b> Soma-se o valor do atributo (já com os redutores), o Bônus de Classe e os modificadores de habilidade.</li>
+                    <li><b>Vencedor.</b> O maior Poder Astral vence (ou a vitória automática de um Grimório, se houver).</li>
+                    <li><b>Consequências.</b> Descartes, compras e marcadores que o Grimório causa depois do Smash!.</li>
+                </ol>
+                <div class="formula" aria-label="Fórmula: Valor Base mais Bônus de Classe mais Modificadores de Habilidade é igual ao Poder Astral">
+                    <span class="f-termo"><small>Valor Base</small>da carta</span><span class="f-op">+</span>
+                    <span class="f-termo"><small>Bônus</small>de Classe</span><span class="f-op">+</span>
+                    <span class="f-termo"><small>Modificadores</small>de Habilidade</span><span class="f-op">=</span>
+                    <span class="f-termo f-total"><small>Poder</small>Astral</span>
+                </div>
+                <div class="exemplo" id="exemplo-mario">
+                    <p class="exemplo-titulo">Exemplo Astral: Mario no desafio de ATK</p>
+                    <div class="exemplo-conta" aria-live="polite">
+                        <span class="e-num"><b data-alvo="85">0</b><small>Base de ATK</small></span><span class="f-op">+</span>
+                        <span class="e-num"><b data-alvo="5">0</b><small>Soberano</small></span><span class="f-op">+</span>
+                        <span class="e-num"><b data-alvo="20">0</b><small>Bloco Surpresa</small></span><span class="f-op">=</span>
+                        <span class="e-num e-total"><b data-alvo="110">0</b><small>Poder Astral</small></span>
+                    </div>
+                    <button type="button" class="codice-btn" id="exemplo-repetir">↻ Ver de novo</button>
+                </div>
+
+                <h3 class="rit-sub">Aura de cada classe</h3>
+                <div class="auras" role="list">
+                    <div class="aura-item" role="listitem" style="--aura-rgb:237, 184, 33"><b>Soberanos</b><span>+5 em ATK, DEF e TECH</span></div>
+                    <div class="aura-item" role="listitem" style="--aura-rgb:219, 116, 39"><b>Trevas</b><span>+10 em ATK</span></div>
+                    <div class="aura-item" role="listitem" style="--aura-rgb:83, 218, 248"><b>Combate</b><span>+10 em TECH</span></div>
+                    <div class="aura-item" role="listitem" style="--aura-rgb:118, 118, 118;--aura-txt:185, 185, 185"><b>Sentinelas</b><span>+10 em DEF</span></div>
+                    <div class="aura-item" role="listitem" style="--aura-rgb:101, 59, 33;--aura-txt:200, 152, 110"><b>Crime</b><span>+5 em ATK<br><em>+15 contra Soberanos, Sentinelas e Trevas</em></span></div>
+                    <div class="aura-item" role="listitem" style="--aura-rgb:138, 74, 168"><b>Caos</b><span>+10 em TECH<br><em>imune ao Desvinculado</em></span></div>
+                </div>
+
+                <h3 class="rit-sub">Quem vence o Smash!</h3>
+                <ul class="vencedor">
+                    <li><b>Vitória.</b> Maior Poder Astral vence. O perdedor é banido para o <strong>Abismo</strong>; o vencedor <strong>resgata 1 prêmio</strong> do Relicário (a carta vai para a sua mão) e a sua lenda <strong>volta à mão</strong>.</li>
+                    <li><b>Desempate por Essência.</b> Poder Astral idêntico? Vence quem tem o maior <strong>valor impresso</strong> na carta para o atributo.</li>
+                    <li><b>Aniquilação Mútua.</b> Até o valor impresso é igual? As duas lendas vão para o Abismo e <strong>ninguém</strong> resgata prêmio (salvo por efeito de Grimório, como o de Rayman).</li>
+                </ul>
+            </section>
+
+            <!-- 5. ESTIGMAS -->
+            <section class="rit-secao" id="rit-estigmas" aria-labelledby="rit-est-t">
+                <header class="rit-cab"><span class="rit-num">5</span><div><h2 id="rit-est-t">Estigmas</h2><p>Durante o conflito, habilidades do Grimório podem impor condições de corrupção.</p></div></header>
+                <div class="estigmas">
+                    <article class="estigma" style="--aura-rgb:180, 110, 255" data-detalhe="desvinculado" tabindex="0" role="button" aria-haspopup="dialog"><img class="est-icone" src="imagens/icones/estigma-desvinculado.webp" width="76" height="76" loading="lazy" decoding="async" alt="Ícone do estigma Desvinculado: um selo de linhagem de pedra, com runas, partido ao meio por raios roxos. Representa a lenda que perde a conexão com a própria classe."><h3>Desvinculado</h3><p>A lenda perde a conexão com a própria linhagem e <strong>anula qualquer Bônus de Classe</strong>. Só a classe Caos é imune.</p><span class="det-abrir" aria-hidden="true">Ver em detalhe →</span></article>
+                    <article class="estigma" style="--aura-rgb:245, 160, 60" data-detalhe="eclipsado" tabindex="0" role="button" aria-haspopup="dialog"><img class="est-icone" src="imagens/icones/estigma-eclipsado.webp" width="76" height="76" loading="lazy" decoding="async" alt="Ícone do estigma Eclipsado: um eclipse, com uma lua negra cobrindo o sol em chamas num céu roxo estrelado. Representa o Jogador que perde o direito de escolher o atributo."><h3>Eclipsado</h3><p>A percepção do Jogador se obscurece: <strong>ele não escolhe o atributo</strong> no próximo ataque que fizer. Quem escolhe é o oponente.</p><span class="det-abrir" aria-hidden="true">Ver em detalhe →</span></article>
+                    <article class="estigma" style="--aura-rgb:120, 140, 170" data-detalhe="obscurecido" tabindex="0" role="button" aria-haspopup="dialog"><img class="est-icone" src="imagens/icones/estigma-obscurecido.webp" width="76" height="76" loading="lazy" decoding="async" alt="Ícone do estigma Obscurecido: o livro do Grimório fechado por correntes e um cadeado, envolto em névoa. Representa o Grimório da lenda anulado."><h3>Obscurecido</h3><p>O acesso às memórias da lenda é bloqueado e o seu <strong>Grimório é anulado</strong>.</p><span class="det-abrir" aria-hidden="true">Ver em detalhe →</span></article>
+                </div>
+                <p class="rit-nota"><b>Marcador:</b> estigma que vem de "se vencer" ou "se perder" cai na <strong>próxima lenda</strong> do Jogador atingido.<br><span class="rit-exemplo">Exemplo: Bowser perde em DEF e vai para o Abismo; a próxima lenda do rival entra com −20 de ATK.</span></p>
+                <p class="rit-nota"><b>Transição de Zona:</b> ao sair da Arena (para o Abismo ou para a mão), a lenda fica <strong>limpa</strong>. Só o Eclipsado continua, porque atinge o Jogador.<br><span class="rit-exemplo">Exemplo: uma lenda Obscurecida que vence volta para a mão, e na próxima vez o Grimório dela funciona.</span></p>
+            </section>
+
+            <!-- 6. VITÓRIA -->
+            <section class="rit-secao" id="rit-vitoria" aria-labelledby="rit-vit-t">
+                <header class="rit-cab"><span class="rit-num">6</span><div><h2 id="rit-vit-t">Condições de Vitória</h2><p>O duelo termina na hora em que um Jogador alcança um destes objetivos, ou sucumbe a uma destas falhas.</p></div></header>
+                <div class="vitorias">
+                    <article class="vit vit-ouro" data-detalhe="resgate" tabindex="0" role="button" aria-haspopup="dialog"><img class="vit-icone" src="imagens/icones/vitoria-resgate.webp" width="76" height="76" loading="lazy" decoding="async" alt="Ícone da vitória por Resgate de Persistência: um baú de ferro e ouro aberto, com cinco gemas douradas subindo. Representa os 5 prêmios resgatados do Relicário."><h3>Resgate de Persistência</h3><p>O primeiro Jogador a resgatar os <strong>5 prêmios do seu Relicário</strong>, vencendo combates, é declarado vencedor absoluto.</p><span class="det-abrir" aria-hidden="true">Ver em detalhe →</span></article>
+                    <article class="vit vit-azul" data-detalhe="exaustao" tabindex="0" role="button" aria-haspopup="dialog"><img class="vit-icone" src="imagens/icones/vitoria-exaustao.webp" width="76" height="76" loading="lazy" decoding="async" alt="Ícone da derrota por Exaustão Existencial: um baralho se desfazendo em fragmentos e poeira azul. Representa o baralho que acabou na hora de comprar."><h3>Exaustão Existencial</h3><p>A energia é finita. Se o seu <strong>baralho estiver vazio</strong> na hora de comprar, o elo se quebra e você é tragado pelo Olvido.</p><span class="det-abrir" aria-hidden="true">Ver em detalhe →</span></article>
+                    <article class="vit vit-roxo" data-detalhe="desolacao" tabindex="0" role="button" aria-haspopup="dialog"><img class="vit-icone" src="imagens/icones/vitoria-desolacao.webp" width="76" height="76" loading="lazy" decoding="async" alt="Ícone da derrota por Desolação na Arena: uma mão aberta e vazia, com a moldura de uma carta se desfazendo em cacos roxos logo acima dela. Representa o Jogador chamado ao Embate sem nenhuma carta na mão."><h3>Desolação na Arena</h3><p>Se for chamado ao Embate sem <strong>nenhuma carta na mão</strong> para lutar, você é consumido pela desolação e derrotado.</p><span class="det-abrir" aria-hidden="true">Ver em detalhe →</span></article>
+                </div>
+            </section>
+
+
+                <!-- Textos detalhados das janelas que abrem ao clicar nos cards acima (ritual.js) -->
+                <template id="det-desvinculado" data-tipo="Estigma" data-img="imagens/icones/estigma-desvinculado-grande.webp" data-titulo="Desvinculado"><p class="det-lead">A lenda perde a conexão com a própria linhagem: o Bônus de Classe não conta no Poder Astral.</p><h4>Como funciona</h4><p>No cálculo do Poder Astral, a lenda Desvinculada soma só o valor da carta e os efeitos de Grimório. O <strong>Bônus de Classe</strong> (a Aura da linhagem) é ignorado. Exemplo: um Soberano perde o +5; um Mestre do Combate perde o +10 em TECH.</p><h4>Quem é imune</h4><p>A classe <strong>Caos e Magia</strong>. A magia dela não depende da linhagem, então o Desvinculado não tem efeito sobre essas lendas.</p><h4>Lendas que aplicam</h4><p>Angry Bird (Red), Sonic, Ganondorf, Nemesis, Kazuya Mishima, Strider Hiryu, Marcus Holloway, Dovahkiin e Yennefer.</p><h4>Como acaba</h4><p>Quando a lenda sai da Arena (vai para o Abismo ou volta para a mão), o estigma é limpo. Se ele veio de um efeito "se vencer" ou "se perder", vira um <strong>marcador</strong> ao lado do Jogador e cai sobre a próxima lenda que ele jogar.</p></template>
+                <template id="det-eclipsado" data-tipo="Estigma" data-img="imagens/icones/estigma-eclipsado-grande.webp" data-titulo="Eclipsado"><p class="det-lead">O único estigma que atinge o Jogador, e não a lenda: no seu próximo ataque, quem escolhe o atributo é o oponente.</p><h4>Como funciona</h4><p>Normalmente o Atacante escolhe o desafio (ATK, DEF ou TECH). Eclipsado, você perde essa escolha <strong>no seu próximo ataque</strong>: o oponente decide o atributo, e é claro que vai escolher o seu ponto mais fraco.</p><h4>Lendas que aplicam</h4><p>Akuma (ao vencer em ATK), M. Bison (ao vencer), Isaac Clarke (ao perder), Ratchet e Geralt of Rivia (que escolhe entre Eclipsado e Obscurecido).</p><h4>Como acaba</h4><p>Como recai sobre o Jogador, ele <strong>não é limpo</strong> quando a lenda sai da Arena. Fica um marcador ao lado do Jogador até o efeito se cumprir no próximo ataque dele.</p><h4>Dica</h4><p>Se você está Eclipsado, guarde para esse turno uma lenda equilibrada, sem um atributo muito baixo.</p></template>
+                <template id="det-obscurecido" data-tipo="Estigma" data-img="imagens/icones/estigma-obscurecido-grande.webp" data-titulo="Obscurecido"><p class="det-lead">As memórias da lenda são bloqueadas: o Grimório dela é anulado e ela luta só com os próprios atributos.</p><h4>Como funciona</h4><p>A lenda Obscurecida não ativa o seu <strong>Grimório</strong> (o efeito especial impresso na carta). O Poder Astral dela é o valor do atributo mais o Bônus de Classe, sem nenhum efeito extra.</p><h4>Quem é imune</h4><p><strong>Sora</strong>: guiado pela luz, o portador da chave é imune ao Obscurecido na Arena.</p><h4>Lendas que aplicam</h4><p>Sigma, Iori Yagami, Ryu Hayabusa, Alan Wake, Solid Snake, Aiden Pearce, Wrench e Geralt of Rivia (que escolhe entre Obscurecido e Eclipsado).</p><h4>Como acaba</h4><p>É limpo quando a lenda sai da Arena. Se veio como marcador de um efeito "se vencer" ou "se perder", a próxima lenda do Jogador atingido já <strong>nasce Obscurecida</strong>.</p></template>
+                <template id="det-resgate" data-tipo="Condição de Vitória" data-img="imagens/icones/vitoria-resgate-grande.webp" data-titulo="Resgate de Persistência"><p class="det-lead">A forma de vencer: resgatar os 5 prêmios do seu Relicário antes do rival.</p><h4>Como funciona</h4><p>Na preparação, cada Jogador separa <strong>5 cartas do próprio baralho</strong>, viradas para baixo: é o Relicário. Cada vez que você vence um Smash!, vira a carta do topo do Relicário e a coloca na mão. A sua lenda vencedora também volta para a mão.</p><h4>Quando não há resgate</h4><p>Na <strong>Aniquilação Mútua</strong> (empate até no valor impresso), as duas lendas vão para o Abismo e ninguém resgata prêmio, salvo efeito de Grimório.</p><h4>Reservas</h4><p>Os prêmios que você já resgatou são as suas <strong>Reservas</strong>. Estar atrás nelas é o gatilho de virada de lendas como Heihachi Mishima e Jin Kazama.</p><h4>Na prática</h4><p>Uma partida costuma durar de 7 a 8 turnos. Cada prêmio resgatado é uma carta a mais na mão, ou seja, vencer também deixa você mais forte para o próximo Smash!.</p></template>
+                <template id="det-exaustao" data-tipo="Condição de Derrota" data-img="imagens/icones/vitoria-exaustao-grande.webp" data-titulo="Exaustão Existencial"><p class="det-lead">A energia é finita: se não houver carta para comprar na hora obrigatória, você é tragado pelo Olvido.</p><h4>Como funciona</h4><p>A Exaustão só acontece na <strong>compra obrigatória da Fase de Dádiva</strong>, no início de cada turno. Se o seu baralho estiver vazio nesse momento, você perde a partida.</p><h4>O que não causa Exaustão</h4><p>Compras extras pedidas por um Grimório com o baralho vazio <strong>simplesmente falham</strong>, sem derrota.</p><h4>Quando aparece</h4><p>É rara: depois da preparação o baralho tem 40 cartas, e as partidas terminam em cerca de 7 a 8 turnos. Ela quase só surge quando o rival gasta o seu baralho com efeitos como os de <strong>Goro</strong> e <strong>Dante</strong>, que mandam a carta do topo do seu baralho para o Abismo.</p></template>
+                <template id="det-desolacao" data-tipo="Condição de Derrota" data-img="imagens/icones/vitoria-desolacao-grande.webp" data-titulo="Desolação na Arena"><p class="det-lead">Sem nenhuma carta na mão quando é chamado ao Embate, você é consumido pela desolação e derrotado.</p><h4>Como funciona</h4><p>As lendas do Embate saem sempre da <strong>mão</strong>. Se chegar a hora de jogar e a sua mão estiver vazia, não há quem lute por você, e a partida termina com a sua derrota.</p><h4>O que não causa Desolação</h4><p>Um Grimório que manda descartar com a mão vazia <strong>simplesmente falha</strong>. A derrota só vem quando você é chamado ao Embate sem carta.</p><h4>Quando aparece</h4><p>Também é rara. Ela surge quando o rival esvazia a sua mão com efeitos como os de <strong>Bomberman</strong>, <strong>Donkey Kong</strong> e <strong>Morrigan</strong>, que fazem você perder cartas da mão.</p></template>
+
+            <!-- 7. DÚVIDAS -->
+            <section class="rit-secao" id="rit-duvidas" aria-labelledby="rit-duv-t">
+                <header class="rit-cab"><span class="rit-num">7</span><div><h2 id="rit-duv-t">Dúvidas e Glossário</h2><p>Os casos que costumam aparecer na primeira partida e, logo abaixo, o que significam os termos dos Grimórios.</p></div></header>
+                <div class="duvidas">
+                    <details><summary>Quem ataca depois do primeiro turno?</summary><p>Os papéis se alternam a cada turno. Se você atacou no turno 1, é o Guardião no turno 2, e assim por diante. O sorteio só decide quem começa.</p></details>
+                    <details><summary>Quem compra cartas, e quando?</summary><p>Os dois Jogadores, <strong>2 cartas cada</strong>, no início de todo turno, inclusive o primeiro (5 da mão inicial + 2 = 7, exatamente o limite).</p></details>
+                    <details><summary>E se eu ficar com mais de 7 cartas?</summary><p>O limite vale na Fase de Dádiva: depois de comprar, quem passar de 7 envia o excedente ao Abismo, escolhendo quais cartas. É de propósito: o Abismo cheio alimenta várias habilidades.</p></details>
+                    <details><summary>De onde saem as lendas do Embate?</summary><p>Sempre da <strong>mão</strong>. As cartas do Relicário são prêmios virados para baixo: só entram na mão quando você as resgata.</p></details>
+                    <details><summary>O que acontece com as duas cartas depois do Smash!?</summary><p>A lenda <strong>perdedora vai para o Abismo</strong>. A <strong>vencedora volta para a mão</strong>. Se o efeito dela dura até o turno seguinte, ela fica <strong>deitada</strong> na mesa como lembrete e só volta à mão quando o efeito se cumprir.</p></details>
+                    <details><summary>O que é "resgatar" um prêmio?</summary><p>Ao vencer um Smash!, você vira a carta do topo do seu Relicário e a coloca na mão. Quando o Relicário esvaziar por vitórias (5 resgates), você vence a partida.</p></details>
+                    <details><summary>Quando acontece a Exaustão ou a Desolação?</summary><p>São redes de segurança, raras. Como as partidas terminam em cerca de 7 a 8 turnos e o baralho tem 40 cartas após a preparação, elas quase só aparecem por efeitos de Grimório (como descartar o topo do baralho de alguém ou esvaziar a mão).</p></details>
+                    <details><summary>E se um Grimório pedir uma carta que não existe?</summary><p>Nada acontece. Compra extra com o baralho vazio, descarte com a mão vazia ou resgate de um Abismo vazio simplesmente falham. A Exaustão só vale na compra obrigatória da Fase de Dádiva.</p></details>
+                    <details><summary>O que acontece quando um Grimório me deixa Eclipsado ou com marcador?</summary><p>O marcador fica ao lado de você até se cumprir. O Eclipsado cumpre no seu próximo ataque (o rival escolhe o atributo); o "-20" e os estigmas valem para a próxima lenda que você jogar; o "Mestre de Almas escolhe o atributo" de Tommy Vercetti vale no começo do turno seguinte.</p></details>
+                    <details><summary>Rayman volta mesmo da derrota?</summary><p>Sim. Rayman é imune ao Abismo no Embate: se perder (ou for aniquilado), o rival resgata o prêmio e Rayman volta para a sua mão.</p></details>
+                    <details><summary>As 3 cartas que sobram na divisão podem voltar ao jogo?</summary><p>Não. Elas ficam fora da partida, nas margens do Olvido, e não contam como cartas do Abismo de nenhum Jogador. O Abismo de cada Jogador começa vazio.</p></details>
+                </div>
+
+                <h3 class="rit-sub" id="rit-glossario">Glossário: termos que os Grimórios usam</h3>
+                <div class="duvidas">
+                    <details><summary>"Luta com…": quando a lenda usa outro atributo</summary><p>Algumas lendas, em certos desafios, <strong>lutam com outro atributo</strong>: Ridley luta com o ATK quando o desafio é DEF; Leon, Chun-Li, Marcus Fenix e Vito lutam com a DEF quando o desafio é ATK; Spyro luta com o ATK quando o desafio é TECH. Nesse caso valem o <strong>valor base e o Bônus de Classe daquele atributo</strong>.</p></details>
+                    <details><summary>O que são "Reservas"?</summary><p>São os <strong>prêmios que você já resgatou</strong>. Ter menos Reservas que o rival significa estar atrás na corrida, e é o gatilho de virada de Heihachi e Jin.</p></details>
+                    <details><summary>Redutores e imunidades</summary><p>Um redutor tira pontos de um atributo (como -20). Chris, Kiryu e Alucard (em DEF) ignoram redutores. Steve e Master Chief também, <strong>a não ser que o valor impresso do rival no atributo seja maior que 95</strong>. Redutores só pesam no atributo que está em disputa.</p></details>
+                    <details><summary>O que é um "efeito matemático"?</summary><p>Tudo o que mexe nos números do duelo: bônus, redutores, trocas e cópias de valor, ignorar ou roubar o Bônus de Classe. Estigmas, anulações, descartes e compras <strong>não</strong> são matemáticos. Alucard (em DEF) e Arthur Morgan anulam os efeitos matemáticos do Grimório rival.</p></details>
+                    <details><summary>Como funcionam as Cópias</summary><p>Copiar nunca piora quem copia: Mega Man, Metal Sonic e Joker só ficam com o valor copiado se ele for maior. Kirby copia o Grimório inteiro do rival. Se <strong>duas habilidades de Cópia</strong> (Kirby, Mega Man, Metal Sonic, Sackboy) se encontram, as duas ficam inertes.</p></details>
+                    <details><summary>Quem age antes da Prioridade?</summary><p>V age antes de todos. Solid Snake age antes de um rival de Prioridade II, e Agent 47 passa a agir na Prioridade I quando o desafio é TECH. A ordem é fixada na revelação das cartas.</p></details>
+                    <details><summary>Moeda, Vitória Automática e Nocaute</summary><p>A moeda dá cara ou coroa com a mesma chance. Vitória Automática (Alan Wake, Aku Aku) e Nocaute (Cuphead e Mugman na coroa) decidem o Smash! na hora, sem olhar o Poder Astral. O vencedor resgata o prêmio normalmente.</p></details>
+                    <details><summary>Atributos que mudam no meio do Smash!</summary><p>Fox, Samus e Amaterasu trocam o atributo do desafio. Se duas lendas trocam, vale a que age <strong>por último</strong>. O Nemesis anula essas fugas (e Rayman, Dutch) e ainda aplica Desvinculado.</p></details>
+                </div>
+            </section>
+
+            <!-- 8. PDF -->
+            <section class="rit-secao rit-final" aria-labelledby="rit-pdf-t">
+                <h2 id="rit-pdf-t">Pronto para jogar?</h2>
+                <p>Escolha suas lendas no Códice e leve as regras com você: o Livro de Regras completo, em PDF, para ler na tela do computador, do celular ou do tablet.</p>
+                <div class="confluente-acoes home-final-acoes">
+                    <button type="button" class="cta-primario" data-ir="codice">Conhecer as 103 lendas</button>
+                    <a class="cta-secundario" href="downloads/livro-de-regras-leitura-digital.pdf" download>Baixar o Livro de Regras (Leitura Digital)</a>
+                </div>
+            </section>
+        </section>
+        <section id="relicario" class="screen">
+            <header class="of-topo">
+                <p class="of-selo-fan"><span aria-hidden="true">◆</span> Conceito · Fan Project · Not for Sale</p>
+                <h1 class="screen-title" tabindex="-1">Oficina do Nexo</h1>
+                <p class="of-lead">Uma vitrine de ideias: os artefatos que o Smash Deck poderia ter no mundo físico. <strong>Nada aqui está à venda.</strong> É um estudo de design de produto, feito para um projeto de fã sem fins comerciais.</p>
+            </header>
+            <div id="oficina-conteudo"></div>
+        </section>
+        <section id="arquiteto" class="screen">
+            <header class="arq-topo">
+                <p class="arq-sobretitulo">Créditos e Legado</p>
+                <h1 class="screen-title" tabindex="-1">O Arquiteto</h1>
+                <p class="arq-lead">O Smash Deck TCG não é só um conjunto de regras. É o resultado de um desafio pessoal: unir décadas de cultura pop em um sistema de combate ágil, técnico e visualmente marcante.</p>
+                <!-- O tamanho do projeto em quatro números -->
+                <ul class="arq-numeros" aria-label="O projeto em números">
+                    <li><b>103</b><span>lendas</span></li>
+                    <li><b>412</b><span>Manifestações da Essência</span></li>
+                    <li><b>36</b><span>páginas no Livro de Regras</span></li>
+                    <li><b>0</b><span>frameworks</span></li>
+                </ul>
+            </header>
+
+            <section class="arq-bio" aria-labelledby="arq-bio-t">
+                <figure class="arq-foto">
+                    <img src="imagens/autor/gustavo-menacho.webp" width="520" height="520" alt="Gustavo Menacho sentado à mesa com um notebook, sorrindo" loading="lazy" decoding="async">
+                </figure>
+                <div class="arq-bio-texto">
+                    <p class="arq-bio-sobre">Quem está por trás</p>
+                    <h2 id="arq-bio-t" class="arq-bio-nome">Gustavo Menacho</h2>
+                    <p class="arq-bio-cargo">Desenvolvedor Front-End e Ex-Analista Jurídico</p>
+                    <!-- Objetivo profissional: escrever aqui a vaga que procuro (ex.: Front-End Júnior · Remoto).
+                         Enquanto estiver vazio, o parágrafo não aparece (CSS :empty). -->
+                    <p class="arq-bio-objetivo"></p>
+                    <!-- Botões de contato (montados por js/contato.js) -->
+                    <div class="arq-bio-contato" data-contato-lista="bio"></div>
+
+                    <h3>De Leis a Algoritmos</h3>
+                    <p>Fui <strong>Analista Jurídico</strong>, focado em <strong>contratos B2B e compliance</strong>. O Direito me ensinou a interpretar regras com rigor e a prever riscos antes que aconteçam, exatamente o que o desenvolvimento de software pede. Mudei de plataforma, não de raciocínio: as regras de conduta viraram <strong>regras de negócio</strong>.</p>
+
+                    <h3>O projeto: Smash Deck TCG</h3>
+                    <p>A vivência no universo gamer e como criador de conteúdo virou o meu principal projeto: uma <strong>Single Page Application</strong> em <strong>JavaScript puro, HTML semântico e CSS</strong>, sem frameworks, com cartas em 3D, partículas que reagem ao mouse e a carta que "voa" do Códice até a ficha.</p>
+                    <p>O jogo, as regras, os textos e as decisões de design são meus. As ilustrações foram geradas com IA sob a minha direção de arte, e no código usei <strong>assistentes de IA como apoio</strong>, revisando e testando cada mudança antes de ela entrar no projeto.</p>
+
+                    <h3>Formação e foco</h3>
+                    <p>Me especializei em <strong>desenvolvimento web Full-Stack</strong> no ecossistema <strong>Rocketseat</strong> e tenho experiência como <strong>freelancer em landing pages</strong>. Meu foco é unir design imersivo e código sólido: interfaces que impressionam e que se sustentam.</p>
+                    <ul class="arq-skills" aria-label="Competências aplicadas neste projeto">
+                        <li>JavaScript ES6+ com módulos</li>
+                        <li>SPA com rotas por hash e History API</li>
+                        <li>CSS Grid, Flexbox e transformações 3D</li>
+                        <li>IntersectionObserver, Canvas e requestAnimationFrame</li>
+                        <li>Acessibilidade: ARIA, teclado e movimento reduzido</li>
+                        <li>Performance: WebP e carregamento sob demanda</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="arq-autor" aria-labelledby="arq-autor-t">
+                <div class="arq-autor-id">
+                    <h2 id="arq-autor-t">Autoria e Desenvolvimento</h2>
+                    <p class="arq-funcao">Criador e Arquiteto de Jogo</p>
+                    <p>Idealizado e desenvolvido por uma única pessoa: das regras às cartas, do universo ao livro.</p>
+                </div>
+                <ul class="arq-funcoes">
+                    <li><b>Game design</b><span>Sistema original de Smash!, Prioridades, Linhagens e Estigmas, balanceado em simulações de partidas.</span></li>
+                    <li><b>Cartas e Grimórios</b><span>103 lendas, cada uma com atributos e uma habilidade única.</span></li>
+                    <li><b>A ficha de cada lenda</b><span>Todas as 103 têm a sua história: como foram arrastadas para o Confluente, o que as torna únicas, a análise estratégica da carta na Arena e as falas do personagem.</span></li>
+                    <li><b>Universo e escrita</b><span>As Crônicas do Confluente, a lore que une todos esses mundos.</span></li>
+                    <li><b>Manual e identidade visual</b><span>Livro de Regras de 36 páginas, pronto para impressão, e o layout das cartas. Ilustrações geradas com IA sob a minha direção de arte; os personagens pertencem aos seus detentores.</span></li>
+                </ul>
+            </section>
+
+            <section class="arq-stack" aria-labelledby="arq-stack-t">
+                <h2 id="arq-stack-t">Como foi construído</h2>
+                <ul class="arq-chips">
+                    <li>HTML5</li><li>CSS3</li><li>JavaScript</li><li>Sem frameworks</li>
+                </ul>
+                <p>Tudo nasce de uma única fonte: cada carta está descrita uma vez só, e as telas (galeria, fichas, manual) são montadas a partir dela. Corrigir um número numa carta corrige o site inteiro. Os destaques que dão vida ao Nexo:</p>
+                <ul class="arq-funcoes arq-destaques">
+                    <li><b>Cartas vivas</b><span>Inclinam e refletem a luz seguindo o mouse; na ficha da lenda, viram com um duplo clique e mostram o verso.</span></li>
+                    <li><b>Carrossel infinito na Home</b><span>As lendas passam sem parar; um clique faz a carta voar até o centro da tela e girar em 3D.</span></li>
+                    <li><b>Ficha da Lenda</b><span>A carta voa da galeria, dá um giro e a ficha se abre ao lado, com navegação entre as lendas e o resto do site desfocado.</span></li>
+                    <li><b>Códice com filtros e ordenação</b><span>Filtro em duas etapas (linhagem e personagem), busca, ordenação por atributo e uma barra que acompanha a rolagem. O filtro fica no endereço: dá para mandar o link já filtrado.</span></li>
+                    <li><b>Crônicas que reagem à leitura</b><span>Lendas que se reúnem no topo, barra de progresso, tempo de leitura calculado e uma cor para cada capítulo.</span></li>
+                    <li><b>Manual interativo</b><span>Um holofote explica cada parte da carta, as cartas voam para o tapete e a conta do Poder Astral corre na tela.</span></li>
+                    <li><b>Universo de fundo</b><span>Partículas que reagem ao mouse e à rolagem.</span></li>
+                    <li><b>Para todos</b><span>Funciona no celular e no teclado, e reduz as animações para quem prefere menos movimento.</span></li>
+                </ul>
+            </section>
+
+            <!-- Problemas reais que apareceram no projeto: problema, solução e resultado -->
+            <section class="arq-desafios" aria-labelledby="arq-desafios-t">
+                <h2 id="arq-desafios-t">Desafios e soluções</h2>
+                <p class="arq-desafios-intro">Problemas reais que apareceram durante o projeto e como foram resolvidos.</p>
+                <div class="arq-desafios-grade">
+                    <article>
+                        <h3>Cartas sem borda e com o verso aparecendo</h3>
+                        <dl>
+                            <dt>Problema</dt><dd>Em algumas placas de vídeo, as 104 cartas com camadas 3D e desfoque perdiam a borda e mostravam o verso por transparência.</dd>
+                            <dt>Solução</dt><dd>As cartas ficaram planas; o 3D só é ligado nas cartas que realmente viram, e o desfoque saiu de dentro delas.</dd>
+                            <dt>Resultado</dt><dd>O defeito sumiu, sem perder o efeito de virar a carta.</dd>
+                        </dl>
+                    </article>
+                    <article>
+                        <h3>Site pesado demais</h3>
+                        <dl>
+                            <dt>Problema</dt><dd>As 104 artes e os 6 fundos, em JPG, somavam 29,5 MB.</dd>
+                            <dt>Solução</dt><dd>Conversão para WebP com tamanho máximo definido, e o mesmo para as fotos da Oficina.</dd>
+                            <dt>Resultado</dt><dd>De 29,5 MB para 10,2 MB nas artes, e de 3,2 MB para 1 MB nas fotos.</dd>
+                        </dl>
+                    </article>
+                    <article>
+                        <h3>O filtro se perdia ao recarregar</h3>
+                        <dl>
+                            <dt>Problema</dt><dd>Um F5 ou um link compartilhado abria o Códice sem o filtro que a pessoa tinha escolhido.</dd>
+                            <dt>Solução</dt><dd>Os filtros vão para o endereço com <code>history.replaceState</code>, que atualiza a URL sem encher o botão Voltar.</dd>
+                            <dt>Resultado</dt><dd>Um link como <code>#codice?classe=trevas&amp;ordem=atk</code> abre exatamente aquela vista.</dd>
+                        </dl>
+                    </article>
+                    <article>
+                        <h3>O navegador mostrava a versão antiga</h3>
+                        <dl>
+                            <dt>Problema</dt><dd>Depois de publicar, quem já tinha visitado o site continuava vendo o CSS antigo, guardado em cache.</dd>
+                            <dt>Solução</dt><dd>Um número de versão no endereço de cada arquivo CSS (<code>?v=</code>), trocado a cada mudança.</dd>
+                            <dt>Resultado</dt><dd>Cada publicação chega na hora para quem visita.</dd>
+                        </dl>
+                    </article>
+                </div>
+            </section>
+
+            <div class="arq-contato" data-contato-bloco hidden>
+                <h2>Vamos conversar?</h2>
+                <p>Este jogo foi pensado, escrito e desenvolvido por mim, em HTML, CSS e JavaScript puros. Achou uma interação estranha ou quer sugerir um ajuste de equilíbrio? Me escreva. E se você está contratando, o meu currículo está a um clique.</p>
+                <div class="confluente-acoes home-final-acoes" data-contato-lista="botoes"></div>
+            </div>
+
+            <blockquote class="arq-citacao">Para cada lenda que cai, uma nova estratégia se levanta. No Confluente, a batalha pela permanência é eterna, e ela apenas começou.</blockquote>
+
+            <figure class="arq-assinatura">
+                <img src="imagens/autor/assinatura-gustavo.webp" width="900" height="393" alt="Assinatura de Gustavo Menacho" loading="lazy" decoding="async">
+                <figcaption>Gustavo Menacho de Almeida · Arquiteto do Smash Deck TCG</figcaption>
+            </figure>
+
+            <!-- Aviso legal no fim, compacto: cada item abre ao clicar (details/summary, sem JavaScript) -->
+            <section class="arq-legal" id="arq-legal" aria-labelledby="arq-legal-t">
+                <h2 id="arq-legal-t">Aviso Legal e Propriedade Intelectual</h2>
+                <p class="arq-legal-resumo">Projeto de fã, sem fins comerciais. Os personagens pertencem aos seus detentores.</p>
+                <div class="arq-legal-grid">
+                    <details><summary>Natureza do Projeto</summary><p>O Smash Deck TCG é uma iniciativa independente de fã com finalidade estritamente educacional, artística e não comercial. Toda a aplicação foi desenvolvida com o objetivo exclusivo de estudo prático e demonstração técnica para portfólio de Engenharia de Software.</p></details>
+                    <details><summary>Direitos Autorais e Marcas Registradas</summary><p>Todos os personagens, nomenclaturas, universos e conceitos visuais de terceiros presentes neste site são propriedades intelectuais dos seus respectivos detentores (Nintendo, Sony, SEGA, Capcom, Microsoft, Square Enix, entre outros). Nomes e marcas são citados apenas para identificar as obras homenageadas. Este projeto não possui qualquer vínculo, patrocínio, licenciamento ou aprovação oficial de nenhuma dessas empresas, e nenhum direito sobre esse material é reivindicado.</p></details>
+                    <details><summary>Política de Não Monetização</summary><p>É expressamente proibida a comercialização, distribuição paga, arrecadação de fundos ou qualquer forma de monetização, direta ou indireta, baseada neste material. O projeto não gera receita de nenhum tipo, inclusive publicidade, e não há produto à venda: os itens da Oficina do Nexo são apenas conceitos.</p></details>
+                    <details><summary>Boa-fé e Remoção de Conteúdo</summary><p>Este é um tributo feito de boa-fé, sem intenção de violar direitos de terceiros. Qualquer titular de direitos que deseje a alteração ou a remoção de algum conteúdo pode solicitar pelo e-mail <a href="mailto:menacho1996@gmail.com">menacho1996@gmail.com</a>; o pedido será atendido com prioridade.</p></details>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <!-- Aviso legal e créditos -->
+    <footer id="footer-nexus">
+        <div class="rodape-topo">
+            <p class="rodape-marca"><strong>Smash Deck TCG</strong> <span>O Confluente de todas as lendas.</span></p>
+            <nav class="rodape-links" aria-label="Links rápidos">
+                <a href="#ritual" data-ir-aba="ritual">Manual do Jogador</a>
+                <a href="#codice" data-ir-aba="codice">Códice das Lendas</a>
+                <a href="#arquiteto" data-ir-aba="arquiteto">Créditos e Aviso Legal</a>
+            </nav>
+            <div class="rodape-contato" data-contato-bloco hidden>
+                <span>Contato</span>
+                <nav class="footer-contato" aria-label="Contato" data-contato-lista></nav>
+            </div>
+        </div>
+        <div class="rodape-legal">
+            <p><strong>Projeto de Fã (Fan Project):</strong> este site tem caráter estritamente não comercial e educacional. Foi construído por Gustavo Menacho como artefato prático de portfólio em desenvolvimento web.</p>
+            <p><strong>Propriedade Intelectual:</strong> todas as lendas, personagens e marcas citadas pertencem aos seus respectivos detentores (Nintendo, Sony, SEGA, Capcom, Microsoft, Square Enix, entre outros). O Smash Deck TCG não possui fins lucrativos, não é um produto oficial e não está à venda: é um tributo à cultura dos videogames. Titulares de direitos podem pedir ajustes ou remoção pelo e-mail <a href="mailto:menacho1996@gmail.com">menacho1996@gmail.com</a>.</p>
+        </div>
+        <p class="rodape-assinatura">2026 • Desenvolvido com estratégia por Gustavo Menacho • HTML, CSS e JavaScript</p>
+    </footer>
+
+    <noscript>
+        <p style="position:relative;z-index:2;text-align:center;padding:20px;">
+            Este site precisa de JavaScript para exibir as cartas.
+        </p>
+    </noscript>
+
+    <!-- JavaScript: o main.js chama todos os outros arquivos -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

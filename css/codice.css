@@ -1,0 +1,755 @@
+/* ============================================================
+   CÓDICE DAS LENDAS: aura, bússola (runas, busca, vista),
+   painel de classes e as duas vistas (grade e carrossel)
+   ============================================================ */
+
+#codice {
+    --aura-rgb: 150, 170, 255; /* trocada por js/modules/codice.js conforme a classe */
+    position: relative;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* Aura: o fundo da tela ganha a cor da linhagem escolhida */
+#codice.active::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 80% 55% at 50% 0%, rgba(var(--aura-rgb), 0.2), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(var(--aura-rgb), 0.1), transparent 70%);
+}
+
+.codice-intro {
+    max-width: 62ch;
+    margin: -4px auto 22px;
+    text-align: center;
+    line-height: 1.6;
+    color: rgba(224, 224, 224, 0.85);
+}
+
+/* ---------- Bússola ---------- */
+/* Barra de filtros: tudo numa linha só (quebra em telas menores)
+   e "gruda" embaixo do menu fixo (70px) quando a pessoa rola as cartas. */
+.codice-controles {
+    position: sticky;
+    top: 71px; /* altura do menu fixo (70px + 1px da borda) */
+    z-index: 20; /* fica por cima das cartas ao rolar */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 12px 18px;
+    max-width: 1100px;
+    margin: 0 auto 18px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    background: rgba(10, 14, 23, 0.96);
+    border: 1px solid rgba(var(--aura-rgb), 0.25);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.runas {
+    scroll-margin-top: 90px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px clamp(8px, 2vw, 22px);
+}
+
+.runa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 84px;
+    padding: 0;
+    font: inherit;
+    font-size: 0.72rem;
+    color: rgba(224, 224, 224, 0.75);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.runa-disco {
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    font-size: 1.4rem;
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+    background: rgba(10, 14, 23, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Os pins são imagens largas com margem transparente: "cover" recorta o centro (a medalha) */
+.runa-disco {
+    overflow: hidden;
+}
+
+.runa-disco img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.12);
+}
+
+.runa:hover .runa-disco {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+.runa[aria-pressed="true"] {
+    color: #fff;
+}
+
+.runa[aria-pressed="true"] .runa-disco {
+    border-color: rgb(var(--aura-txt, var(--aura-rgb)));
+    box-shadow: 0 0 22px rgba(var(--aura-rgb), 0.65), inset 0 0 12px rgba(var(--aura-rgb), 0.35);
+}
+
+.runa:focus-visible,
+.vista-toggle button:focus-visible,
+.classe-tile:focus-visible,
+.seta:focus-visible,
+.busca input:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 3px;
+}
+
+/* Filtro em duas etapas: classe e personagem */
+.codice-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 18px;
+}
+
+.filtro {
+    display: grid;
+    gap: 6px;
+    width: 200px;
+}
+
+.filtro-ordem {
+    width: 140px;
+}
+
+.filtro-rotulo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgb(var(--aura-txt, var(--aura-rgb, 224, 224, 224)));
+}
+
+.filtro select {
+    width: 100%;
+    padding: 11px 14px;
+    font: inherit;
+    color: var(--text-light);
+    background: rgba(10, 14, 23, 0.85);
+    border: 1px solid rgba(var(--aura-rgb, 255, 255, 255), 0.45);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.filtro select option {
+    background: #0b0f19;
+    color: #e2e8f0;
+}
+
+.filtro select:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+/* Etapa 2 bloqueada até escolher a classe */
+.filtro select:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.codice-ferramentas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 12px 18px;
+}
+
+.busca input {
+    box-sizing: border-box;
+    width: 200px;
+    padding: 11px 16px;
+    font: inherit;
+    color: var(--text-light);
+    background: rgba(10, 14, 23, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+}
+
+.busca input::placeholder {
+    color: rgba(224, 224, 224, 0.5);
+}
+
+.vista-toggle {
+    display: inline-flex;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(10, 14, 23, 0.8);
+}
+
+.vista-toggle button {
+    display: inline-flex;
+    align-items: center;
+    padding: 11px 20px;
+    font: inherit;
+    color: rgba(224, 224, 224, 0.75);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.vista-toggle button[aria-pressed="true"] {
+    color: rgb(var(--aura-on, 17, 17, 17));
+    font-weight: 700;
+    background: rgb(var(--aura-rgb));
+}
+
+/* ---------- Painel de classes ---------- */
+.codice-painel {
+    scroll-margin-top: 90px; /* ao rolar até o painel, ele não fica atrás do menu fixo */
+    max-width: 1100px;
+    margin: 0 auto 18px;
+    padding: clamp(16px, 3vw, 28px);
+    background: rgba(10, 14, 23, 0.72);
+    border: 1px solid rgba(var(--aura-rgb), 0.35);
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(var(--aura-rgb), 0.12);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.painel-titulo {
+    margin: 0 0 8px;
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+}
+
+.painel-intro {
+    max-width: 70ch;
+    margin: 0 0 18px;
+    line-height: 1.6;
+    color: rgba(224, 224, 224, 0.85);
+}
+
+.classe-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 14px;
+}
+
+.classe-tile {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    grid-template-areas: "pin nome" "pin sub" "bonus bonus" "qtd qtd";
+    column-gap: 14px;
+    align-items: center;
+    padding: 14px;
+    font: inherit;
+    text-align: left;
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(var(--aura-rgb), 0.45);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.classe-tile:hover {
+    transform: translateY(-3px);
+    background: rgba(var(--aura-rgb), 0.1);
+    box-shadow: 0 8px 24px rgba(var(--aura-rgb), 0.25);
+}
+
+.classe-tile img {
+    grid-area: pin;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.classe-tile-nome {
+    grid-area: nome;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+}
+
+.classe-tile-sub {
+    grid-area: sub;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.classe-tile-bonus {
+    grid-area: bonus;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.classe-tile-qtd {
+    grid-area: qtd;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    opacity: 0.65;
+}
+
+.classe-voltar,
+.codice-btn {
+    padding: 8px 16px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.classe-voltar:hover,
+.codice-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.classe-ficha-pin {
+    width: clamp(72px, 16vw, 104px);
+    height: clamp(72px, 16vw, 104px);
+    object-fit: cover;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 14px rgba(var(--aura-rgb), 0.6));
+}
+
+.classe-ficha-sub {
+    margin: 4px 0 0;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.classe-bonus {
+    display: inline-block;
+    margin: 0 0 14px;
+    padding: 8px 14px;
+    font-weight: 700;
+    color: rgb(var(--aura-on, 17, 17, 17));
+    background: rgb(var(--aura-rgb));
+    border-radius: 8px;
+}
+
+.classe-bonus span {
+    margin-right: 6px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+}
+
+/* Telas largas: comentário e pontos à esquerda, critério de seleção à direita */
+@media (min-width: 900px) {
+    .classe-ficha {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        grid-template-areas:
+            "voltar voltar"
+            "topo topo"
+            "bonus bonus"
+            "texto criterio";
+        column-gap: 40px;
+    }
+
+    .classe-voltar { grid-area: voltar; justify-self: start; }
+    .classe-bonus { grid-area: bonus; justify-self: start; }
+}
+
+.classe-comentario,
+.classe-criterio {
+    max-width: 75ch;
+    line-height: 1.65;
+}
+
+.classe-pontos {
+    max-width: 75ch;
+    margin: 12px 0 18px;
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
+.classe-pontos li {
+    margin-bottom: 6px;
+}
+
+.classe-pontos strong {
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+}
+
+.classe-criterio-titulo {
+    margin: 18px 0 6px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+}
+
+.codice-contagem {
+    margin: 6px 0 4px;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.codice-vazio {
+    padding: 40px 16px;
+    text-align: center;
+}
+
+/* ---------- Palco das cartas ---------- */
+.codice-palco {
+    position: relative;
+}
+
+#deck-container .card-container[hidden] {
+    display: none;
+}
+
+.seta {
+    display: none;
+    position: absolute;
+    top: 50%;
+    z-index: 5;
+    width: 46px;
+    height: 46px;
+    margin-top: -23px;
+    padding: 0 0 4px;
+    font-size: 2rem;
+    line-height: 1;
+    color: #fff;
+    background: rgba(10, 14, 23, 0.85);
+    border: 1px solid rgba(var(--aura-rgb), 0.7);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.seta-ant {
+    left: 8px;
+}
+
+.seta-prox {
+    right: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .palco-carrossel .seta {
+        display: block;
+    }
+}
+
+/* Carrossel: a carta do meio fica ~20% maior que as laterais */
+#deck-container.vista-carrossel {
+    display: flex;
+    flex-wrap: nowrap;          /* no carrossel as cartas ficam numa linha só */
+    justify-content: flex-start; /* o centro aqui vem do padding abaixo */
+    gap: 0;
+    overflow-x: auto;
+    padding: 36px max(16px, calc(50% - 168px)) 44px;
+    scroll-snap-type: x mandatory; /* a barra de rolagem vem do estilo global (global.css) */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+}
+
+.vista-carrossel .card-container {
+    position: relative;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    transform: scale(0.83);
+    border-radius: var(--border-radius);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Cartas laterais ficam escurecidas por uma película, não por opacity (opacity deixava a carta
+   semitransparente e o verso aparecia pelas bordas). */
+.vista-carrossel .card-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    border-radius: var(--border-radius);
+    background: rgba(6, 9, 16, 0.42);
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.vista-carrossel .card-container.is-center::after {
+    opacity: 0;
+}
+
+.vista-carrossel .card-container.is-center {
+    transform: scale(1);
+    box-shadow: 0 26px 40px rgba(0, 0, 0, 0.65), 0 0 40px rgba(var(--aura-rgb), 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vista-carrossel .card-container,
+    .vista-carrossel .card-container::after {
+        transition: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .runa {
+        width: 72px;
+    }
+
+    .runa-disco {
+        width: 54px;
+        height: 54px;
+    }
+
+    .vista-toggle button {
+        padding: 10px 16px;
+    }
+}
+
+
+/* Painel de classe do Códice agora é só um resumo; a explicação completa fica em Linhagens */
+.classe-resumo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 22px;
+}
+.classe-resumo .classe-ficha-pin { margin: 0; }
+.classe-resumo-texto { flex: 1 1 280px; min-width: 0; }
+.classe-resumo-texto .classe-bonus { margin-top: 10px; }
+.classe-resumo-frase { margin: 8px 0 0; line-height: 1.55; }
+.classe-resumo-frase span { opacity: 0.8; }
+.classe-resumo-acoes { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.codice-btn-destaque {
+    background: rgba(var(--aura-rgb), 0.25);
+    border-color: rgb(var(--aura-txt, var(--aura-rgb)));
+    font-weight: 700;
+}
+
+/* Cartas do Códice: o cursor de "mãozinha" já indica que dá para clicar */
+#deck-container .card-container {
+    cursor: pointer;
+}
+
+/* Dica discreta ao lado da contagem: "103 lendas · Clique em uma carta para ver a ficha" */
+.codice-dica {
+    opacity: 0.7;
+}
+
+.codice-dica::before {
+    content: "·";
+    margin: 0 8px;
+}
+
+/* Mouse: "Clique". Tela de toque: "Toque". */
+.dica-toque {
+    display: none;
+}
+
+@media (hover: none) {
+    .dica-mouse {
+        display: none;
+    }
+
+    .dica-toque {
+        display: inline;
+    }
+}
+
+/* Ícones de Grade/Carrossel: só aparecem no celular (no computador fica o texto) */
+.vista-icone {
+    display: none;
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* ---------- Botão "voltar ao topo" ----------
+   Fica escondido (visibility: hidden também tira ele do Tab) até o JS
+   colocar a classe "visivel". */
+.botao-topo {
+    position: fixed;
+    right: clamp(16px, 3vw, 32px);
+    bottom: clamp(16px, 3vw, 32px);
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    color: var(--text-light);
+    background: rgba(10, 14, 23, 0.9);
+    border: 1px solid rgba(var(--aura-rgb), 0.5);
+    border-radius: 50%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s, border-color 0.2s ease;
+}
+
+.botao-topo.visivel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+.botao-topo:hover {
+    border-color: rgb(var(--aura-rgb));
+}
+
+.botao-topo:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 3px;
+}
+
+.botao-topo svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Celular: a barra fica mais baixa (sem os rótulos e com os campos lado a lado),
+   para não ocupar metade da tela enquanto gruda no topo.
+   Linha 1: classe | personagem    Linha 2: busca | ordenar | grade/carrossel */
+@media (max-width: 700px) {
+    .codice-controles {
+        gap: 8px;
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .codice-filtros,
+    .codice-ferramentas {
+        width: 100%;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .filtro {
+        flex: 1;
+        width: auto;
+        min-width: 0;
+    }
+
+    .filtro-rotulo,
+    .vista-texto {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0); /* some da tela, mas o leitor de tela ainda lê */
+    }
+
+    .filtro select,
+    .busca input {
+        padding: 9px 10px;
+        font-size: 0.9rem;
+    }
+
+    .busca {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .busca input {
+        width: 100%;
+    }
+
+    .vista-toggle {
+        flex-shrink: 0;
+    }
+
+    .vista-toggle button {
+        padding: 9px 11px;
+    }
+
+    .vista-icone {
+        display: block;
+    }
+
+    /* Sem o rótulo "Ordenar por", um ícone de ordenação explica o menu */
+    .filtro-ordem select {
+        padding-left: 30px;
+        padding-right: 4px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3 5h14M3 10h9M3 15h4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 9px center;
+        background-size: 16px;
+    }
+
+    /* A dica vai para a linha de baixo da contagem, sem o ponto */
+    .codice-dica {
+        display: block;
+        margin-top: 2px;
+        font-size: 0.85rem;
+    }
+
+    .codice-dica::before {
+        content: none;
+    }
+
+    /* Grade no celular: 2 cartas por linha, em miniatura.
+       zoom diminui a carta inteira (texto, bordas, ícones) por igual.
+       Um toque abre a ficha com a carta em tamanho real. */
+    #deck-container.vista-grade {
+        gap: 10px 8px;
+    }
+
+    #deck-container.vista-grade .card-container {
+        zoom: 0.5;
+    }
+}
+
+/* Celulares mais estreitos: a miniatura diminui um pouco para caberem 2 por linha */
+@media (max-width: 375px) {
+    #deck-container.vista-grade .card-container {
+        zoom: 0.46;
+    }
+}
+
+@media (max-width: 340px) {
+    #deck-container.vista-grade .card-container {
+        zoom: 0.41;
+    }
+
+    .filtro select,
+    .busca input {
+        font-size: 0.8rem;
+    }
+
+    .vista-toggle button {
+        padding: 9px 8px;
+    }
+}

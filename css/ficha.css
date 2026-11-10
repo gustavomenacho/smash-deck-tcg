@@ -1,0 +1,542 @@
+/* ============================================================
+   FICHA DA LENDA: carta à esquerda, ficha à direita, fundo desfocado
+   ============================================================ */
+
+/* Duração do voo da carta: definida no <html> por js/modules/ficha.js (a carta voadora fica fora do overlay) */
+:root {
+    --voo: 900ms;
+}
+
+.ficha-overlay {
+    --ficha-rgb: 150, 170, 255;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    opacity: 0;
+    transition: opacity var(--voo) ease;
+}
+
+/* O desfoque fica numa camada IRMÃ da carta (atrás do conteúdo), nunca num ancestral dela:
+   backdrop-filter em ancestral de uma carta com backface-visibility deixa a carta translúcida
+   e mostra o verso em algumas GPUs. */
+.ficha-overlay::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(4, 6, 12, 0.72);
+    -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter var(--voo) ease, -webkit-backdrop-filter var(--voo) ease;
+}
+
+.ficha-overlay[hidden] {
+    display: none;
+}
+
+.ficha-overlay.aberta {
+    opacity: 1;
+}
+
+.ficha-overlay.aberta::after {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.ficha-overlay::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(var(--ficha-rgb), 0.18), transparent 70%);
+}
+
+.ficha-fechar {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    width: 44px;
+    height: 44px;
+    padding: 0 0 3px;
+    font-size: 1.8rem;
+    line-height: 1;
+    color: #fff;
+    background: rgba(10, 14, 23, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.ficha-fechar:hover {
+    background: rgba(var(--ficha-rgb), 0.35);
+}
+
+.ficha-fechar:focus-visible,
+.ficha-nav-btn:focus-visible,
+.ficha-painel:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 3px;
+}
+
+.ficha-layout {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    min-height: 100%;
+    padding: 64px 16px 40px;
+}
+
+.ficha-carta-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    flex: 0 0 auto;
+}
+
+.ficha-slot {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+/* Carta durante o voo (fixa na tela) e depois de pousar (dentro do slot) */
+.ficha-clone {
+    margin: 0 !important;
+    width: 315px !important;
+    height: 440px !important;
+    perspective: 1200px;
+    cursor: default;
+}
+
+.ficha-clone:not(.pousada) {
+    position: fixed;
+    z-index: 9500;
+    transform-origin: center center;
+    pointer-events: none;
+}
+
+.ficha-clone.voando {
+    transition: top var(--voo) ease-in-out, left var(--voo) ease-in-out, transform var(--voo) ease-in-out;
+}
+
+/* Sombra nas faces (não em filter no contêiner, que quebra o 3D e deixa bordas/verso transparentes) */
+.ficha-clone .face {
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+}
+
+.ficha-clone.pousada {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    transform: scale(var(--e, 1));
+    transform-origin: 0 0;
+}
+
+/* Troca de carta: some e volta sem usar opacity (opacity < 1 num ancestral quebra o 3D da carta). */
+.ficha-clone.trocando {
+    visibility: hidden;
+}
+
+.ficha-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ficha-nav-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0 0 3px;
+    font-size: 1.7rem;
+    line-height: 1;
+    color: #fff;
+    background: rgba(10, 14, 23, 0.85);
+    border: 1px solid rgba(var(--ficha-rgb), 0.7);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.ficha-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.ficha-contador {
+    min-width: 64px;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ---------- Painel ---------- */
+.ficha-painel {
+    box-sizing: border-box;
+    width: min(100%, 780px);
+    padding: clamp(18px, 3vw, 32px);
+    background: rgba(10, 14, 23, 0.8);
+    border: 1px solid rgba(var(--ficha-rgb), 0.45);
+    border-radius: 18px;
+    box-shadow: 0 0 50px rgba(var(--ficha-rgb), 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    opacity: 0;
+    transform: translateX(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    line-height: 1.65;
+}
+
+.ficha-painel.visivel {
+    opacity: 1;
+    transform: none;
+}
+
+/* Título em três linhas: código pequeno, nome grande e subtítulo.
+   Mesma fonte do resto do site (antes era Georgia, que destoava). */
+.ficha-codigo {
+    margin: 0 0 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.ficha-titulo {
+    margin: 0;
+    font: 700 clamp(1.8rem, 4vw, 2.6rem) / 1.1 var(--font-principal);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgb(var(--ficha-rgb));
+    text-shadow: 0 0 18px rgba(var(--ficha-rgb), 0.4);
+}
+
+.ficha-sub {
+    margin: 6px 0 18px;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    color: rgba(241, 241, 241, 0.85);
+}
+
+.ficha-linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin: 0 0 8px;
+}
+
+.ficha-pin {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.chip {
+    display: inline-block;
+    padding: 3px 11px;
+    font-size: 0.88rem;
+    background: rgba(var(--ficha-rgb), 0.16);
+    border: 1px solid rgba(var(--ficha-rgb), 0.55);
+    border-radius: 999px;
+}
+
+.chip-forte {
+    font-weight: 700;
+    color: #111;
+    background: rgb(var(--ficha-rgb));
+}
+
+/* Barras de atributos */
+.ficha-barras {
+    display: grid;
+    gap: 8px;
+    margin: 14px 0 6px;
+}
+
+.barra {
+    display: grid;
+    grid-template-columns: 44px 1fr 34px;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.barra-sigla {
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.barra-trilho {
+    height: 10px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+}
+
+.barra-fill {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s;
+}
+
+.barras-prontas .barra-fill {
+    width: var(--w);
+}
+
+.barra-fill.atk { background: linear-gradient(90deg, #a81919, #ff5a4d); }
+.barra-fill.def { background: linear-gradient(90deg, #1b5fb5, #4db8ff); }
+.barra-fill.tech { background: linear-gradient(90deg, #b58a05, #ffd60a); }
+.barra-fill.incerta { background: repeating-linear-gradient(45deg, #666, #666 6px, #444 6px, #444 12px); }
+
+.barra-valor {
+    font-weight: 700;
+    text-align: right;
+}
+
+/* Seções */
+.ficha-sec {
+    margin-top: 26px;
+}
+
+/* Títulos das seções: pequenos, em maiúsculas e espaçados (sem numeração) */
+.ficha-sec h3 {
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    font: 700 0.8rem / 1.3 var(--font-principal);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(var(--ficha-rgb));
+    border-bottom: 1px solid rgba(var(--ficha-rgb), 0.25);
+}
+
+.ficha-sec p {
+    margin: 0 0 12px;
+}
+
+/* Capitular ornamentada na primeira letra da história */
+.ficha-historia p:first-of-type::first-letter {
+    float: left;
+    padding: 4px 10px 0 0;
+    font: 700 3.6em / 0.85 var(--font-principal);
+    color: rgb(var(--ficha-rgb));
+    text-shadow: 0 0 16px rgba(var(--ficha-rgb), 0.6);
+}
+
+/* Manifestações: cards translúcidos de tamanho fixo */
+.ficha-manif {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ficha-manif li {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 150px;
+    padding: 14px 14px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(var(--ficha-rgb), 0.3);
+    border-radius: 12px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.manif-ico {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1.5rem;
+}
+
+.ficha-manif strong {
+    display: block;
+    margin-bottom: 4px;
+    color: rgb(var(--ficha-rgb));
+}
+
+.ficha-manif p {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.5;
+}
+
+.ficha-nota {
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.ficha-falas blockquote {
+    margin: 0 0 10px;
+    padding: 6px 0 6px 14px;
+    font: italic 1rem / 1.55 var(--font-principal);
+    border-left: 3px solid rgb(var(--ficha-rgb));
+}
+
+.ficha-falas cite {
+    display: block;
+    font: 700 0.8rem / 1.4 var(--font-principal);
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--ficha-rgb));
+}
+
+.ficha-aviso {
+    margin-top: 20px;
+    opacity: 0.75;
+}
+
+/* ---------- Telas largas: carta à esquerda, ficha à direita ---------- */
+@media (min-width: 900px) {
+    .ficha-overlay {
+        overflow: hidden;
+    }
+
+    .ficha-layout {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(28px, 4vw, 64px);
+        height: 100%;
+        padding: 24px clamp(24px, 4vw, 64px);
+    }
+
+    .ficha-painel {
+        flex: 1 1 auto;
+        max-width: 780px;
+        max-height: calc(100dvh - 48px);
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 560px) {
+    .ficha-manif {
+        grid-template-columns: 1fr;
+    }
+
+    .ficha-manif li {
+        min-height: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ficha-overlay,
+    .ficha-painel,
+    .barra-fill {
+        transition: none;
+    }
+
+    .ficha-painel {
+        transform: none;
+    }
+}
+
+.ficha-acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+
+/* ---------- Prioridade: botão "?" e explicação ---------- */
+.ficha-ajuda {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    font: 700 0.8rem / 1 var(--font-principal);
+    color: rgba(255, 255, 255, 0.8);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.ficha-ajuda:hover,
+.ficha-ajuda[aria-expanded="true"] {
+    color: #111;
+    background: rgb(var(--ficha-rgb));
+    border-color: rgb(var(--ficha-rgb));
+}
+
+.ficha-explica {
+    max-width: 560px;
+    margin: 0 0 10px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 2px solid rgb(var(--ficha-rgb));
+    border-radius: 0 8px 8px 0;
+}
+
+.ficha-link {
+    padding: 0;
+    font: inherit;
+    font-weight: 700;
+    color: rgb(var(--ficha-rgb));
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.ficha-link:hover {
+    text-decoration: underline;
+}
+
+.ficha-ajuda:focus-visible,
+.ficha-link:focus-visible,
+.vizinha:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+/* ---------- Fim da ficha: lenda anterior e próxima ---------- */
+.ficha-vizinhas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.vizinha {
+    display: grid;
+    gap: 2px;
+    padding: 12px 16px;
+    text-align: left;
+    font: inherit;
+    color: var(--text-light, #e0e0e0);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.vizinha:hover {
+    background: rgba(var(--ficha-rgb), 0.08);
+    border-color: rgba(var(--ficha-rgb), 0.5);
+}
+
+.vizinha-prox {
+    text-align: right;
+}
+
+.vizinha-rotulo {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.vizinha-nome {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

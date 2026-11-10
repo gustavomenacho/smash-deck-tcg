@@ -1,0 +1,149 @@
+/* ============================================================
+   LINHAGENS: reaproveita runas, painel e botões do Códice (codice.css)
+   ============================================================ */
+#linhagens {
+    --aura-rgb: 245, 205, 3;
+    position: relative;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+#linhagens.active::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    transition: background 0.4s;
+    background:
+        radial-gradient(ellipse 80% 55% at 50% 0%, rgba(var(--aura-rgb), 0.22), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(var(--aura-rgb), 0.1), transparent 70%);
+}
+#linhagens .runas { margin-bottom: 18px; }
+
+.linha-painel.trocando { animation: linha-entra 0.45s ease-out; }
+@keyframes linha-entra {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+}
+
+.linha-ficha {
+    padding: clamp(20px, 3vw, 36px);
+    border: 1px solid rgba(var(--aura-rgb), 0.35);
+    border-radius: 18px;
+    background: linear-gradient(160deg, rgba(var(--aura-rgb), 0.1), rgba(10, 12, 24, 0.82) 55%);
+    box-shadow: 0 0 40px rgba(var(--aura-rgb), 0.12);
+}
+
+/* Topo: selo | nome, subtítulo e frase | bônus */
+.linha-topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(var(--aura-rgb), 0.2);
+}
+.linha-pin {
+    width: clamp(80px, 12vw, 112px);
+    height: clamp(80px, 12vw, 112px);
+    border-radius: 50%;
+    object-fit: cover;
+    filter: drop-shadow(0 0 16px rgba(var(--aura-rgb), 0.55));
+}
+.linha-nome { flex: 1 1 260px; min-width: 0; }
+.linha-nome .painel-titulo { margin: 0; }
+.linha-sub { margin: 2px 0 10px; font-style: italic; opacity: 0.8; }
+.linha-destaque {
+    margin: 0;
+    padding-left: 12px;
+    border-left: 3px solid rgb(var(--aura-rgb));
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    font-style: italic;
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+}
+.linha-topo .classe-bonus { margin: 0; }
+
+/* Corpo: texto (esquerda) e pontos fortes (direita) */
+.linha-corpo { display: grid; gap: 28px; margin-top: 26px; }
+@media (min-width: 900px) {
+    .linha-corpo { grid-template-columns: 1.5fr 1fr; gap: 44px; align-items: start; }
+}
+.linha-principal p { margin: 0; line-height: 1.75; }
+.linha-identidade { margin-bottom: 22px !important; font-size: 1.05rem; color: #eef2f7; }
+.linha-titulo {
+    margin: 0 0 10px;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(var(--aura-txt, var(--aura-rgb)));
+}
+
+.linha-lateral {
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: rgba(var(--aura-rgb), 0.07);
+    border: 1px solid rgba(var(--aura-rgb), 0.25);
+}
+.linha-pontos { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.linha-pontos li { display: grid; gap: 4px; line-height: 1.6; }
+.linha-pontos strong { color: rgb(var(--aura-txt, var(--aura-rgb))); }
+.linha-pontos span { color: #cfd6e2; }
+
+/* Critério de seleção: faixa larga no fim */
+.linha-criterio {
+    margin-top: 28px;
+    padding: 18px 22px;
+    border-left: 3px solid rgb(var(--aura-rgb));
+    border-radius: 0 12px 12px 0;
+    background: rgba(255, 255, 255, 0.03);
+}
+.linha-criterio p { margin: 0; line-height: 1.75; color: #d7dde8; }
+
+.linha-acoes { display: flex; justify-content: center; margin-top: 28px; }
+/* O botão usa a cor da linhagem, e não o dourado padrão */
+.linha-acoes .cta-primario {
+    color: rgb(var(--aura-on, 10, 14, 23));
+    background: rgb(var(--aura-rgb));
+    border-color: rgb(var(--aura-rgb));
+    box-shadow: 0 0 22px rgba(var(--aura-rgb), 0.5);
+}
+.linha-acoes .cta-primario:hover { box-shadow: 0 0 34px rgba(var(--aura-rgb), 0.8); }
+
+.linha-ajuda { margin: 4px 0 10px; font-size: 0.9rem; color: rgba(224, 224, 224, 0.7); }
+
+@media (prefers-reduced-motion: reduce) {
+    .linha-painel.trocando { animation: none; }
+}
+
+/* Comparativo das seis linhagens */
+#linha-comparativo { margin-top: 34px; }
+/* A tabela ganha o mesmo "cartão" do painel de cima */
+.comparativo {
+    padding: clamp(18px, 3vw, 30px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: rgba(10, 12, 24, 0.7);
+}
+.comparativo .painel-titulo { margin-top: 0; }
+/* Primeira coluna larga, as três de bônus com a mesma largura */
+.comparativo thead th:first-child { width: 40%; text-align: left; }
+.comparativo thead th:not(:first-child) { width: 20%; }
+.comparativo-rolagem { overflow-x: auto; }
+.comparativo table { width: 100%; border-collapse: collapse; min-width: 420px; }
+.comparativo th, .comparativo td {
+    padding: 10px 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.comparativo thead th { font-size: 0.8rem; letter-spacing: 0.08em; opacity: 0.75; }
+.comparativo tbody th { text-align: left; font-weight: 600; white-space: nowrap; }
+.comparativo tbody th img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 8px; }
+.comparativo td { font-weight: 700; font-size: 1.05rem; }
+.comparativo td small { display: block; font-weight: 400; font-size: 0.7rem; opacity: 0.75; }
+.comparativo tr[aria-current="true"] { background: rgba(var(--aura-rgb), 0.2); box-shadow: inset 3px 0 0 rgb(var(--aura-rgb)); }
+@media (max-width: 600px) {
+    .comparativo table { min-width: 0; }
+    .comparativo th, .comparativo td { padding: 8px 5px; font-size: 0.85rem; }
+    .comparativo tbody th { white-space: normal; }
+    .comparativo tbody th img { display: none; }
+}

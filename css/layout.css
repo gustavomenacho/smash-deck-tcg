@@ -1,0 +1,267 @@
+/* ============================================================
+   HUD MESTRE (MENU FIXO)
+   Largura > 1320px: links na barra. Até 1320px: gaveta lateral.
+   ============================================================ */
+#hud-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px clamp(15px, 3vw, 40px);
+    box-sizing: border-box;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    gap: 15px;
+}
+
+/* O vidro fica num pseudo-elemento porque backdrop-filter no próprio #hud-menu
+   o transformaria no "bloco de contenção" da gaveta (position: fixed) e ela
+   passaria a medir só 70px de altura. */
+#hud-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--hud-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* Logo do menu: é um link que volta para o Início */
+.logo-nexus {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+}
+
+.logo-nexus img {
+    display: block;
+    height: 50px;
+    width: auto;
+    filter: drop-shadow(0 0 8px rgba(245, 205, 3, 0.25));
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.logo-nexus:hover img {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 12px rgba(245, 205, 3, 0.6));
+}
+
+.logo-nexus:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 4px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1vw, 18px);
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: clamp(0.75rem, 0.95vw, 0.9rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent-gold);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+}
+
+/* Botão hambúrguer (só aparece na versão com gaveta) */
+.menu-toggle {
+    display: none;
+    position: relative;
+    z-index: 2; /* acima da gaveta, para poder fechá-la */
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid rgba(245, 205, 3, 0.35);
+    border-radius: 10px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--accent-gold);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Fundo escuro atrás da gaveta (fora do #hud-menu, por isso z-index menor) */
+#menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#menu-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ============================================================
+   TELAS (SPA)
+   ============================================================ */
+#game-screens {
+    padding-top: 90px; /* evita que o menu sobreponha o conteúdo */
+    min-height: calc(100vh - 150px);
+    outline: none;
+}
+
+.screen {
+    display: none; /* esconde tudo... */
+    padding: 20px clamp(16px, 4vw, 40px);
+}
+
+.screen.active {
+    display: block; /* ...e mostra só a aba ativa */
+}
+
+.screen-title {
+    margin: 10px 0 30px;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--accent-gold);
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+#footer-nexus {
+    text-align: center;
+    padding: 28px 16px 22px;
+    background: rgba(0, 0, 0, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #8a93a3;
+    font-size: 0.85rem;
+    margin-top: 40px;
+}
+
+#footer-nexus p {
+    margin: 5px 0;
+}
+
+/* 1. Marca, links rápidos e contato */
+.rodape-topo { display: grid; justify-items: center; gap: 10px; }
+.rodape-marca strong { color: var(--accent-gold); letter-spacing: 0.08em; text-transform: uppercase; }
+.rodape-marca span { color: #a8b2c3; }
+.rodape-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; }
+.rodape-links a { color: #cbd5e1; text-decoration: none; border-bottom: 1px solid rgba(203, 213, 225, 0.3); padding-bottom: 1px; }
+.rodape-links a:hover, .rodape-links a:focus-visible { color: var(--accent-gold); border-color: var(--accent-gold); }
+.rodape-contato { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 6px 14px; }
+.rodape-contato[hidden] { display: none; }
+.rodape-contato > span { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: #6f7a8d; }
+.rodape-contato .footer-contato { margin-top: 0; }
+
+/* 2. Aviso legal ("letra miúda"): discreto, mas presente em todas as abas */
+.rodape-legal { max-width: 860px; margin: 18px auto 0; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+#footer-nexus .rodape-legal p { margin: 0 0 6px; font-size: 0.76rem; line-height: 1.6; color: #77829a; }
+.rodape-legal strong { color: #9aa5b8; }
+.rodape-legal a { color: #9aa5b8; text-underline-offset: 2px; }
+.rodape-legal a:hover, .rodape-legal a:focus-visible { color: var(--accent-gold); }
+
+/* 3. Assinatura de dev */
+#footer-nexus .rodape-assinatura { margin-top: 12px; font-size: 0.8rem; color: #8a93a3; }
+
+/* ============================================================
+   GAVETA (telas até 1320px, incluindo celulares)
+   ============================================================ */
+@media (max-width: 1320px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    #menu-overlay {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(85vw, 340px);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 84px 0 24px;
+        overflow-y: auto;
+        background: rgba(8, 11, 19, 0.98);
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+        transform: translateX(100%);
+        visibility: hidden; /* fechada: fora da ordem de Tab */
+        transition: transform 0.3s ease, visibility 0s linear 0.3s;
+    }
+
+    #hud-menu.drawer-open .nav-links {
+        transform: none;
+        visibility: visible;
+        transition: transform 0.3s ease, visibility 0s;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 16px 28px;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-links a.active {
+        background: rgba(245, 205, 3, 0.08);
+        border-left: 3px solid var(--accent-gold);
+        padding-left: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    #game-screens {
+        padding-top: 80px;
+    }
+}
